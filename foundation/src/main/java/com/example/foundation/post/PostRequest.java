@@ -1,6 +1,7 @@
 package com.example.foundation.post;
 
 public class PostRequest {
+    //postmapping에 사용되는 코드
     private String title;
     private String content;
     private Long userId;

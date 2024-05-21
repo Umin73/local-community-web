@@ -10,6 +10,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 public class PostController {
+    //게시글 관련 controller
     @Autowired
     private PostService postService;
 

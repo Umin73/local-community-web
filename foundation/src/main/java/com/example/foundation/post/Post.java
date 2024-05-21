@@ -12,8 +12,10 @@ public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long postId;
+    //우선적으로 연결성 확인
     private String title;
     private String content;
+
 //    private LocalDateTime createdTime;
 //    private LocalDateTime modifiedTime;
 //    private int likeCount;

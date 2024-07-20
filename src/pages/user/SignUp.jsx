@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import "../css/SignUp.css";
-import Postcode from "./PostCode";
+import "../../css/SignUp.css";
+import Postcode from "../../components/user/PostCode";
 
 export default function SignUp() {
   const emailList = ["gmail.com", "naver.com", "hanmail.net", "daum.net"];

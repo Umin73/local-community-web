@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import styles from "../Post.module.css";
+import styles from "../../css/Post.module.css";
 import axios from "axios";
 import CommentItem from "./commentItem";
 

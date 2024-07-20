@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import "../css/MyInfo.css";
-import { userData } from "../data/userData";
+import "../../css/MyInfo.css";
+import { userData } from "../../data/userData";
 
 export default function MyPost() {
   const canChange = () => {};
@@ -121,10 +121,10 @@ const Table = styled.div`
 `;
 
 const Edit = styled.button`
-    margin: right: 50px;
+    margin-right: 50px;
     float : right;
 `;
 const NicknameCheck = styled.button`
     display: inline-block;
-    margin: right: 10px;
+    margin-right: 10px;
 `;

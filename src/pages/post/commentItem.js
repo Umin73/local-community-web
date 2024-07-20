@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import styles from "../css/Comment.module.css";
+import styles from "../../css/Comment.module.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -86,39 +86,39 @@ function CommentItem({ userToken, item, postId }) {
       });
   };
 
-  // const likeComment = (event, commentId) => {
-  //   event.preventDefault();
-  //   // 유저 임시 설정
-  //   axios
-  //     .get(
-  //       `http://localhost:8080/comment/isLiked?userId=1&commentId=${commentId}`
-  //     )
-  //     .then(function (response) {
-  //       console.log(response.data);
-  //       if (response.data) {
-  //         alert("이미 추천한 댓글입니다.");
-  //         return;
-  //       }
+  const likeComment = (event, commentId) => {
+    event.preventDefault();
+    // 유저 임시 설정
+    axios
+      .get(
+        `http://localhost:8080/comment/isLiked?userId=1&commentId=${commentId}`
+      )
+      .then(function (response) {
+        console.log(response.data);
+        if (response.data) {
+          alert("이미 추천한 댓글입니다.");
+          return;
+        }
 
-  //       if (window.confirm("이 글을 추천하시겠습니까?")) {
-  //         axios
-  //           .post("http://localhost:8080/comment/like", {
-  //             userId: userId,
-  //             commentId: commentId,
-  //           })
-  //           .then((response) => {
-  //             window.location.reload();
-  //           })
-  //           .catch((err) => {
-  //             console.log("error : ", err);
-  //           });
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       console.log("error : ");
-  //       console.log(err);
-  //     });
-  // };
+        if (window.confirm("이 글을 추천하시겠습니까?")) {
+          axios
+            .post("http://localhost:8080/comment/like", {
+              userId: userId,
+              commentId: commentId,
+            })
+            .then((response) => {
+              window.location.reload();
+            })
+            .catch((err) => {
+              console.log("error : ", err);
+            });
+        }
+      })
+      .catch((err) => {
+        console.log("error : ");
+        console.log(err);
+      });
+  };
 
   return (
     <div className={styles.parent}>

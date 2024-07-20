@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { myPostData } from "../data/myPostData";
+import { myPostData } from "../../data/myPostData";
 import Pagination from "react-js-pagination";
 
 export default function MyPost() {

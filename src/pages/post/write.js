@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import styles from "../Write.module.css";
+import styles from "../../css/Write.module.css";
 import axios from "axios";
 
 function Write() {

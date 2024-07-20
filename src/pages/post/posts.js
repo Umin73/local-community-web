@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import PostItem from "./postItem";
-import styles from "../css/Posts.module.css";
+import styles from "../../css/Posts.module.css";
 import axios from "axios";
 
 function Posts() {

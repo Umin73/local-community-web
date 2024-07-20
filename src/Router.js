@@ -1,12 +1,10 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./css/App.css";
-import Login from "./pages/Login";
-import SignUp from "./pages/SignUp";
-import Bookmark from "./pages/Bookmark";
-import MyInfo from "./pages/MyInfo";
-import MyPost from "./pages/MyPost";
-import MyComment from "./pages/MyComment";
-import Header from "./components/Header";
+import Bookmark from "./pages/my/Bookmark";
+import MyInfo from "./pages/my/MyInfo";
+import MyPost from "./pages/my/MyPost";
+import MyComment from "./pages/my/MyComment";
+import Header from "./components/my/Header";
 
 export default function Router() {
   return (
@@ -14,8 +12,6 @@ export default function Router() {
       <BrowserRouter>
         <Header />
         <Routes>
-          <Route path="/login" element={<Login/>} />
-          <Route path="/signup" element={<SignUp/>} />
           <Route path="/myComment" element={<MyComment />} />
           <Route path="/myPost" element={<MyPost />} />
           <Route path="/bookmark" element={<Bookmark />} />

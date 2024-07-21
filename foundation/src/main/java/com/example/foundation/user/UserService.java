@@ -13,4 +13,8 @@ public class UserService {
         User user = userRepository.findByUserId(userId);
         return user != null && user.getPassword().equals(password);
     }
+
+    public User findById(Long id) {
+        return userRepository.findById(id).orElse(null);
+    }
 }

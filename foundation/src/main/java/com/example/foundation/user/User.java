@@ -16,6 +16,24 @@ public class User {
     private String phone;
     private String email;
 
+    private String nickname;
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public Region getRegion() {
+        return region;
+    }
+
+    public void setRegion(Region region) {
+        this.region = region;
+    }
+
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Region region;
 

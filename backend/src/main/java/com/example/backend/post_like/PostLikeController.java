@@ -17,12 +17,7 @@ public class PostLikeController {
     }
 
     @PostMapping("/post/like")
-    public ResponseEntity<String> likePost(@RequestBody PostLikeRequest postLikeRequest, HttpServletRequest request) {
-        try {
-            PostLike postLike =  postLikeService.likePost(postLikeRequest.getUserId(), postLikeRequest.getPostId());
-            return ResponseEntity.ok("좋아요 성공");
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+    public void likePost(@RequestBody PostLikeRequest postLikeRequest) {
+        postLikeService.likePost(postLikeRequest.getUserId(), postLikeRequest.getPostId());
     }
 }

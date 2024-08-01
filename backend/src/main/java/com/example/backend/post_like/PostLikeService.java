@@ -25,12 +25,12 @@ public class PostLikeService {
 //    public List<PostLike> findByUserId(Long userId) {
 //        return postLikeRepository.findByUserId(userId);
 //    }
-    public PostLike likePost(Long userId, Long postId) {
+    public void likePost(Long userId, Long postId) {
         //임시 설정
         User user = userRepository.findById(1L).orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("Invalid post ID"));
         PostLike postLike = new PostLike(user, post);
-        return postLikeRepository.save(postLike);
+        postLikeRepository.save(postLike);
     }
 
     public boolean isLiked(Long userId, Long postId) {

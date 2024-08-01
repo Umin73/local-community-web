@@ -25,13 +25,13 @@ public class CommentLikeService {
     public List<CommentLike> getLikeCountByCommentId(Long commentId) {
         return commentLikeRepository.findByCommentId(commentId);
     }
-    public CommentLike likeComment(Long userId, Long commentId) {
+    public void likeComment(Long userId, Long commentId) {
         //임시 설정
         User user = userRepository.findById(1L).orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
         Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new IllegalArgumentException("Invalid comment ID"));
 
         CommentLike commentLike = new CommentLike(user, comment);
-        return commentLikeRepository.save(commentLike);
+        commentLikeRepository.save(commentLike);
     }
     public boolean isLiked(Long userId, Long commentId) {
         return commentLikeRepository.findByUserIdAndCommentId(userId, commentId).isPresent();

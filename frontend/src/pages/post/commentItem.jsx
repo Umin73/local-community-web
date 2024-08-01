@@ -87,9 +87,9 @@ export default function CommentItem({ userToken, item, postId }) {
     event.preventDefault();
     // 유저 임시 설정
     axios
-      .get(
-        `http://localhost:8080/comment/isLiked?userId=1&commentId=${commentId}`
-      )
+      .get(`http://localhost:8080/comment/${commentId}/isLiked?`, {
+        params: { userId: 1 },
+      })
       .then(function (response) {
         console.log(response.data);
         if (response.data) {

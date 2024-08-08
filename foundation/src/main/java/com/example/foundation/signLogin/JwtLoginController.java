@@ -1,166 +1,112 @@
 package com.example.foundation.signLogin;
-
 import com.example.foundation.user.User;
 import com.example.foundation.user.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/jwt-login")
 public class JwtLoginController {
 
     private final UserService userService;
 
-    @GetMapping(value = {"", "/"})
-    public String home(Model model, Authentication auth) {
-        model.addAttribute("loginType", "jwt-login");
-        model.addAttribute("pageName", "Jwt Token 화면 로그인");
-
+    @GetMapping("/")
+    public String home(Authentication auth) {
         if(auth != null) {
             User loginUser = userService.getLoginUserByuserId(auth.getName());
-            if (loginUser != null) {
-                model.addAttribute("nickname", loginUser.getNickname());
-            }
         }
-
-        return "home";
+        return "Jwt Token 화면 로그인";
     }
 
     @GetMapping("/join")
-    public String joinPage(Model model) {
-        model.addAttribute("loginType", "jwt-login");
-        model.addAttribute("pageName", "Jwt Token 화면 로그인");
-
-        model.addAttribute("joinRequest", new JoinRequest());
-        return "join";
+    public String joinPage() {
+        return "Jwt Token 화면 로그인";
     }
 
     @PostMapping("/join")
-    public String join(@Valid @ModelAttribute JoinRequest joinRequest, BindingResult bindingResult, Model model) {
-        model.addAttribute("loginType", "jwt-login");
-        model.addAttribute("pageName", "Jwt Token 화면 로그인");
-
+    public String join(@Valid @RequestBody JoinRequest joinRequest, BindingResult bindingResult) {
         // userId 중복 체크
         if(userService.checkuserIdDuplicate(joinRequest.getUserId())) {
             bindingResult.addError(new FieldError("joinRequest", "userId", "로그인 아이디가 중복됩니다."));
         }
-        // 닉네임 중복 체크
-        if(userService.checkNicknameDuplicate(joinRequest.getNickname())) {
-            bindingResult.addError(new FieldError("joinRequest", "nickname", "닉네임이 중복됩니다."));
-        }
+
         // password와 passwordCheck가 같은지 체크
         if(!joinRequest.getPassword().equals(joinRequest.getPasswordCheck())) {
-            bindingResult.addError(new FieldError("joinRequest", "passwordCheck", "바밀번호가 일치하지 않습니다."));
+            bindingResult.addError(new FieldError("joinRequest", "passwordCheck", "비밀번호가 일치하지 않습니다."));
         }
 
         if(bindingResult.hasErrors()) {
-            return "join";
+            return "회원가입 실패";
         }
 
         userService.join2(joinRequest);
-        return "redirect:/jwt-login";
+        return "회원가입 성공";
     }
 
     @GetMapping("/login")
-    public String loginPage(Model model) {
-        model.addAttribute("loginType", "jwt-login");
-        model.addAttribute("pageName", "Jwt Token 화면 로그인");
-
-        model.addAttribute("loginRequest", new LoginRequest());
-        return "login";
+    public String loginPage() {
+        return "Jwt Token 화면 로그인";
     }
 
-    @PostMapping("/login")
-    public String login(@ModelAttribute LoginRequest loginRequest, BindingResult bindingResult,
-                        HttpServletResponse response, Model model) {
-        model.addAttribute("loginType", "jwt-login");
-        model.addAttribute("pageName", "Jwt Token 화면 로그인");
+    @PostMapping("/login")public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest, BindingResult bindingResult,
+                                                              HttpServletResponse response) {
 
         User user = userService.login(loginRequest);
 
-        // 로그인 아이디나 비밀번호가 틀린 경우 global error return
-        if(user == null) {
+        if (user == null) {
             bindingResult.reject("loginFail", "로그인 아이디 또는 비밀번호가 틀렸습니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인 실패");
         }
 
-        if(bindingResult.hasErrors()) {
-            return "login";
-        }
-
-        // 로그인 성공 => Jwt Token 발급
-        long expireTimeMs = 1000 * 60 * 60;     // Token 유효 시간 = 60분
-
+        long expireTimeMs = 1000 * 60 * 60; // Token 유효 시간 = 60분
         String jwtToken = JwtTokenUtil.createToken(user.getUserId(), expireTimeMs);
 
-        // 발급한 Jwt Token을 Cookie를 통해 전송
-        // 클라이언트는 다음 요청부터 Jwt Token이 담긴 쿠키 전송 => 이 값을 통해 인증, 인가 진행
         Cookie cookie = new Cookie("jwtToken", jwtToken);
-        cookie.setHttpOnly(true); // JavaScript를 통한 쿠키 접근 방지
-        cookie.setMaxAge((int) (expireTimeMs / 1000));  // 쿠키 유효 시간 : 1시간
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge((int) (expireTimeMs / 1000));
         cookie.setPath("/");
         response.addCookie(cookie);
 
-        return "redirect:/jwt-login";
+        return ResponseEntity.ok("로그인 성공");
     }
 
     @GetMapping("/logout")
-    public String logout(HttpServletResponse response, Model model) {
-        model.addAttribute("loginType", "jwt-login");
-        model.addAttribute("pageName", "Jwt Token 화면 로그인");
-
+    public String logout(HttpServletResponse response) {
         // 쿠키 파기
         Cookie cookie = new Cookie("jwtToken", null);
         cookie.setMaxAge(0);
         cookie.setPath("/");
         response.addCookie(cookie);
 
-        return "redirect:/jwt-login";
+        return "로그아웃 성공";
     }
 
     @GetMapping("/info")
-    public String userInfo(Model model, Authentication auth) {
-        model.addAttribute("loginType", "jwt-login");
-        model.addAttribute("pageName", "Jwt Token 화면 로그인");
-
-        User loginUser = userService.getLoginUserByuserId(auth.getName());
-        model.addAttribute("user", loginUser);
-
-        return "info";
+    public User userInfo(Authentication auth) {
+        return userService.getLoginUserByuserId(auth.getName());
     }
 
     @GetMapping("/admin")
-    public String adminPage(Model model) {
-        model.addAttribute("loginType", "jwt-login");
-        model.addAttribute("pageName", "Jwt Token 화면 로그인");
-
-        return "admin";
+    public String adminPage() {
+        return "Jwt Token 화면 로그인";
     }
 
     @GetMapping("/authentication-fail")
-    public String authenticationFail(Model model) {
-        model.addAttribute("loginType", "jwt-login");
-        model.addAttribute("pageName", "Jwt Token 화면 로그인");
-
-        return "errorPage/authenticationFail";
+    public String authenticationFail() {
+        return "인증 실패";
     }
 
     @GetMapping("/authorization-fail")
-    public String authorizationFail(Model model) {
-        model.addAttribute("loginType", "jwt-login");
-        model.addAttribute("pageName", "Jwt Token 화면 로그인");
-
-        return "errorPage/authorizationFail";
+    public String authorizationFail() {
+        return "권한 실패";
     }
 }

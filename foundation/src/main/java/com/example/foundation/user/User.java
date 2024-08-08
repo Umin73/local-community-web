@@ -1,12 +1,10 @@
 package com.example.foundation.user;
 
-import com.example.foundation.region.Region;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 @Entity
 @Builder
 @Getter
@@ -22,10 +20,4 @@ public class User {
     private String phone;
     private String email;
     private String nickname;
-    private UserRole role;
-
-//    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-//    private Region region;
-
-
 }

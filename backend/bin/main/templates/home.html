@@ -1,14 +1,23 @@
-<!-- home.html -->
-<!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+    <title th:text="|${pageName}|"></title>
 </head>
 <body>
-<h2>Welcome to the Home Page!</h2>
-<p>You are logged in.</p>
-<!-- 여기에 홈 페이지의 내용을 추가 가능. -->
+<div>
+    <h1><a th:href="|/${loginType}|">[[${pageName}]]</a></h1> <hr/>
+    <div th:if="${nickname == null}">
+        <h3>로그인 되어있지 않습니다!</h3>
+        <button th:onclick="|location.href='@{/{loginType}/join (loginType=${loginType})}'|">회원 가입</button> <br/><br/>
+        <button th:onclick="|location.href='@{/{loginType}/login (loginType=${loginType})}'|">로그인</button>
+    </div>
+    <div th:unless="${nickname == null}">
+        <h3>[[${nickname}]]님 환영합니다!</h3>
+        <button th:onclick="|location.href='@{/{loginType}/info (loginType=${loginType})}'|">유저 정보</button> <br/><br/>
+        <button th:onclick="|location.href='@{/{loginType}/admin (loginType=${loginType})}'|">관리자 페이지</button> <br/><br/>
+        <button th:onclick="|location.href='@{/{loginType}/logout (loginType=${loginType})}'|">로그아웃</button>
+    </div>
+</div>
 </body>
 </html>

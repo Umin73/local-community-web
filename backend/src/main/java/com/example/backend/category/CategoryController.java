@@ -1,15 +1,18 @@
 package com.example.backend.category;
 
-//@RestController
-//@RequestMapping("/category/{categoryId}")
-//public class CategoryController {
-//
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class CategoryController {
+
 //    @Autowired
 //    public CategorySevice categoryService;
-//
-//    @GetMapping("/posts/{categoryId}")
+
+//    @GetMapping("//{categoryId}")
 //    public String getCategoryNameById(@PathVariable("categoryId") Long categoryId) {
 //        String name = categoryService.getCategoryNameById(categoryId);
 //        return name;
 //    }
-//}
+}

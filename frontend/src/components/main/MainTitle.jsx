@@ -31,7 +31,7 @@ function MainTitle(props) {
         <>
             <TopWrapper>
                 <div><a className="topBox" href="#">로그인</a></div>
-                <div><a className="topBox" href="javascript:window.open('member.html','')">회원가입</a></div>
+                <div><a className="topBox" href="#">회원가입</a></div>
             </TopWrapper>
             <hr/>
             <TitleWrapper>

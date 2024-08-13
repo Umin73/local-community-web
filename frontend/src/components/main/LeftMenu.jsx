@@ -20,8 +20,8 @@ function LeftMenu(props) {
                         <form name="loginForm" method="get" action="left_menu.jsp" target="left">
                             <fieldset>
                                 <legend align="center">LOGIN</legend>
-                                <p>ID : <input type="text" name="id" size="12" value=""/></p>
-                                <p>PW : <input type="password" name="pw" size="12" value=""/></p>
+                                <p>ID : <input type="text" name="id" size="12"/></p>
+                                <p>PW : <input type="password" name="pw" size="12"/></p>
                                 <p align ="center">
                                     <input type="submit" value="로그인"/>&nbsp;
                                     <input type="reset" value="재작성"/>
@@ -29,8 +29,8 @@ function LeftMenu(props) {
                             </fieldset>
                         </form>
                         <br/>
-                        회원이 아니신 분은<a href= "member.html" target="right"></a><br/>
-                        <input type="button" className="move" value="회원가입" onClick="javascript:window.open('member.html','')"/>
+                        회원이 아니신 분은<a href= "#" target="right"></a><br/>
+                        <input type="button" className="move" value="회원가입" />
                         <br/><br/><br/>
 
                         <div className="mymenu"><a href="#" className="txt2">나의 글</a></div><br/>

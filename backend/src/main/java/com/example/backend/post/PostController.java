@@ -45,6 +45,7 @@ public class PostController {
     @GetMapping("/posts/{categoryId}")
     public ResponseEntity<Page<PostListResponse>> getPostsByCategoryId(@PathVariable("categoryId") Long categoryId, @RequestParam(name = "page", defaultValue = "0") int page) {
         int size = 5; // 페이지 당 포스트 수
+        System.out.println("엥?");
         Pageable pageable = PageRequest.of(page, size);
         Page<PostListResponse> posts = postService.getPostsByCategoryId(categoryId, pageable);
         return ResponseEntity.ok(posts);

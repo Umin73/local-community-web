@@ -41,7 +41,7 @@ function MainBoard(props) {
                             <table border="1" className="table1">
                                 <tbody>
                                     <tr>
-                                        <td className="tabletitle" style={tableStyle} onClick={() => handleClick(1, "자유")}> 자유 게시판 (클릭하세요)</td>
+                                        <td className="tabletitle" style={tableStyle} onClick={() => handleClick(4, "자유")}> 자유 게시판 (클릭하세요)</td>
                                     </tr>
                                     <tr>
                                         <td>보리: 지금 구리에 비 오나요?</td>
@@ -56,7 +56,7 @@ function MainBoard(props) {
                             <table border="1" className="table1">
                                 <tbody>
                                     <tr>
-                                        <td className="tabletitle" style={tableStyle} onClick={() => handleClick(2, "정보")}>정보 게시판</td>
+                                        <td className="tabletitle" style={tableStyle} onClick={() => handleClick(5, "정보")}>정보 게시판</td>
                                     </tr>
                                     <tr>
                                         <td>dasds: 고등학교 추천 부탁드려요</td>
@@ -71,7 +71,7 @@ function MainBoard(props) {
                             <table border="1" className="table1">
                                 <tbody>
                                     <tr>
-                                        <td className="tabletitle" style={tableStyle} onClick={() => handleClick(3, "홍보")}>홍보 게시판</td>
+                                        <td className="tabletitle" style={tableStyle} onClick={() => handleClick(6, "홍보")}>홍보 게시판</td>
                                     </tr>
                                     <tr>
                                         <td>곰이: 내일 곰이네 카페 오픈합니다 선착순 50명 텀블러 증정, 텀블러 소진 시 선착순 100명 아메리카노 쿠폰 증정합니다. 많이 와주세요~!</td>
@@ -91,13 +91,13 @@ function MainBoard(props) {
                             <table border="1" className="table1">
                                 <tbody>
                                     <tr>
-                                        <td className="tabletitle" style={tableStyle} onClick={() => handleClick(4, "리뷰")}>리뷰 게시판</td>
+                                        <td className="tabletitle" style={tableStyle} onClick={() => handleClick(7, "식당")}>식당 게시판</td>
                                     </tr>
                                     <tr>
                                         <td>와이지: YG감자탕 ★★★★☆<br/>처음 가봤는데 직원들도 친절하시고 감자탕도 맛있네요···</td>
                                     </tr>
                                     <tr>
-                                        <td>에스엠: SM미용실 ★★★★★<br/>다른 미용실에 비해 가격이 엄청 저렴하네요···</td>
+                                        <td>에스엠: SM식당 ★★★★★<br/>다른 식당에 비해 가격이 엄청 저렴하네요···</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -106,7 +106,7 @@ function MainBoard(props) {
                             <table border="1" className="table1">
                                 <tbody>
                                     <tr>
-                                        <td className="tabletitle" style={tableStyle} onClick={() => handleClick(5, "분실")}>분실 게시판</td>
+                                        <td className="tabletitle" style={tableStyle} onClick={() => handleClick(15, "분실")}>분실 게시판</td>
                                     </tr>
                                     <tr>
                                         <td>adansd0123: 혹시 구리 문화 공원에서 이렇게 생긴 지갑 보신 분</td>
@@ -121,7 +121,7 @@ function MainBoard(props) {
                             <table border="1" className="table1">
                                 <tbody>
                                     <tr>
-                                        <td className="tabletitle" style={tableStyle} onClick={() => handleClick(6, "실종")}>실종 게시판</td>
+                                        <td className="tabletitle" style={tableStyle} onClick={() => handleClick(16, "실종")}>실종 게시판</td>
                                     </tr>
                                     <tr>
                                         <td>하이브: 구리역 부근에서 강아지 보신 분 계신가요? 포메이고 사람 손을 잘···<img src="./image/dog.jpg" width="100px" height="100px"/></td>

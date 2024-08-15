@@ -103,6 +103,18 @@ public class PostService {
         return posts.map(PostListResponse::toDto);
     }
 
+    //@Transactional(readOnly = true)
+    //public Page<PostListResponse> searchPostsByCategoryId(Long categoryId, String keyword, Pageable pageable) {
+    //    Page<Post> posts = postRepository.findByCategoryIdAndTitleContainingAndContentContaining(categoryId, keyword, pageable);
+    //    return posts.map(PostListResponse::toDto);
+    //}
+
+    @Transactional(readOnly = true)
+    public Page<PostListResponse> searchPosts(Pageable pageable) {
+        Page<Post> posts = postRepository.findAll(pageable);
+        return posts.map(PostListResponse::toDto);
+    }
+
     @Transactional
     public Long update(Long postId, PostEditRequest postEditRequest, List<MultipartFile> imageFiles) throws Exception {
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("Invalid post ID"));
@@ -139,8 +151,6 @@ public class PostService {
         post.update(postEditRequest);
         return postId;
     }
-
-
     @Transactional
     public void delete(Long postId) throws Exception {
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("Invalid post ID"));

@@ -1,22 +1,33 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import styles from "../../css/Write.module.css";
+import "../../css/Write.css";
 import axios from "axios";
+import Dropdown  from "../../components/post/Dropdown.jsx";
 
 export default function Edit() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { name, postId, title, content, images } = location.state;
-  const [newTitle, setTitle] = useState(title);
-  const [newContent, setContent] = useState(content);
+  const { categoryId: initialCategoryId, category: initialCategory, postId, title: initialTitle, content: initialContent, images } = location.state;
+  const [categoryId, setCategoryId] = useState(initialCategoryId);
+  const [title, setTitle] = useState(initialTitle);
+  const [content, setContent] = useState(initialContent);
   const [previewImg, setPreviewImg] = useState(
     images.map((image) => image.url) || []
   );
   const [files, setFiles] = useState([]);
   const fileInputRef = useRef(null);
+  const [view, setView] = useState(false); 
+  const [selectedCategory, setSelectedCategory] = useState(initialCategory);
+  const [currentCategoryId, setCurrentCategoryId] = useState(initialCategoryId); // 변경된 변수명 사용
+
+  const handleSelect = (subCategoryId, selectedCategory) => {
+    setSelectedCategory(selectedCategory);
+    setCurrentCategoryId(subCategoryId); // 변경된 변수명 사용
+    setView(false); // 선택 후 드롭다운을 닫습니다.
+  };
 
   useEffect(() => {
-    let imgContainers = document.querySelectorAll(`.${styles.imgContainers}`);
+    let imgContainers = document.querySelectorAll(`write__imgContainers`);
     if (!previewImg || previewImg.length === 0) {
       imgContainers.forEach((container) => {
         container.style.padding = "0";
@@ -29,6 +40,9 @@ export default function Edit() {
       });
     }
   }, [previewImg]);
+
+  const validCategoryIds = [1, 2, 3];
+  const shouldShowCategorySelector = validCategoryIds.includes(Number(location.state.categoryId));
 
   function uploadFile(e) {
     let fileArr = Array.from(e.target.files);
@@ -64,8 +78,8 @@ export default function Edit() {
     }
 
     const postEditRequest = {
-      title: newTitle,
-      content: newContent,
+      title: title,
+      content: content,
       currentImageUrls: previewImg,
       isEdited: true,
     };
@@ -98,40 +112,54 @@ export default function Edit() {
   };
 
   return (
-    <div className={styles.root}>
+    <div className="root">
       <h2>{location.state.name} 게시판</h2>
-      <div className={styles.parent}>
-        <div className="container">
-          <input
-            className={styles.input}
-            type="text"
-            value={newTitle}
-            onChange={(event) => setTitle(event.target.value)}
-          />
+      <div className="write__parent">
+        <ul className="flexContainer">
+            {shouldShowCategorySelector && (
+              <li className="categorySelector" onClick={() => {setView(!view)}}>
+                {selectedCategory}
+                <div className="arrow">
+                  {view ? <img src="https://town-in.s3.ap-northeast-2.amazonaws.com/home/arrows_up.png" className="upAndDown"
+                   /> : <img src="https://town-in.s3.ap-northeast-2.amazonaws.com/home/arrows_down.png" className="upAndDown"/>}
+                </div>
+                {view && <Dropdown categoryId={categoryId} onSelect={handleSelect} />}
+              </li>
+              )}
+              <li className="flexItem">
+                <input
+                  className="write__title"
+                  type="text"
+                  placeholder="제목을 입력하세요."
+                  value={title}
+                  onChange={(event) => setTitle(event.target.value)}/>
+              </li>
+          </ul>
           <textarea
-            className={styles.textarea}
+            className="textarea"
             type="text"
-            value={newContent}
+            placeholder="내용을 입력하세요."
             rows="15"
+            value={content}
             onChange={(event) => setContent(event.target.value)}
           />
-          <div className={styles.imgContainers}>
+          <div className="write__imgContainers">
             {previewImg.map((item, index) => (
-              <div key={index} className={styles.imgItem}>
+              <div key={index}>
                 <img
                   src={item}
                   alt={`Image ${index + 1}`}
-                  className={styles.previewImg}
+                  className="write__previewImg"
                   onClick={() => deleteImage(index)}
+                  value={previewImg}
                 />
               </div>
             ))}
           </div>
           <form onSubmit={handleSubmit}>
-            <div className={styles.btnContainer}>
-              <label className={styles.inputFileButton} htmlFor="input-file">
+            <div className="write__btnContainer">
+              <label htmlFor="input-file">
                 <img
-                  className={styles.inputFileImg}
                   src="https://i.ibb.co/LS8qx0w/1976059-camera-images-photo-picture-icon.png"
                   alt="upload icon"
                 />
@@ -146,11 +174,10 @@ export default function Edit() {
                 style={{ display: "none" }}
               />
 
-              <input type="submit" className={styles.submit} value="작성" />
+              <input type="submit" className="write__submit" value="작성" />
             </div>
           </form>
         </div>
       </div>
-    </div>
   );
 }

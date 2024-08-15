@@ -10,9 +10,9 @@
 
 .topBox:hover {color: red;  background-color: #4d4d4d;}
 
-.txt {color:black; text-decoration:none;}
+.txt {color:black; text-decoration:none; cursor: pointer;}
 
-.txt2 {color:white; text-decoration:none;}
+.txt2 {color:white; text-decoration:none; }
 
 .header {width:500px; height:80px; background-color:green; text-align:center; font-size:50px; font-family: 'Holtwood One SC', serif;
     color:white; text-shadow:10px 0px 10px #4d4d4d;}
@@ -42,6 +42,7 @@
     width: 150px;
     font-size: 14px;
     font-weight: bold;
+    cursor:pointer;
 }
 
 .menuLink {color: white;}
@@ -94,7 +95,7 @@
 
 .mymenu:hover {background-color: #4d4d4d;}
 
-.tabletitle {height:30px; color:white; background-color:#b9b9b9; font-size:15px; font-weight:bold;}
+.tabletitle {height:30px; color:white; background-color:#b9b9b9; font-size:15px; font-weight:bold; cursor:pointer;}
 
 .rightmenu {width:250px; height:1000px; float:right;}
 

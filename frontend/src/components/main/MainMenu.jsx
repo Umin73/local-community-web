@@ -19,9 +19,8 @@ function MainMenu(props) {
 
     const navigate = useNavigate();
 
-    const handleClick = (id, categoryName) => {
-        console.log("오잉?");
-        navigate(`/posts/${id}`, { state: { name: categoryName } });
+    const handleClick = (id, category) => {
+        navigate(`/posts/${id}`, { state: { category } });
     };
 
     return (
@@ -31,32 +30,32 @@ function MainMenu(props) {
                     <ul>
                         <li className="topMenuLi"> <a className="menuLink" href="#">About us</a></li>
                         <li>|</li>
-                        <li className="topMenuLi"><a className="menuLink" href="#">Comunity</a>
+                        <li className="topMenuLi"><a className="menuLink" onClick={() => handleClick(1, "커뮤니티")}>Comunity</a>
                             <ul className="submenu">
-                                <li><a href="#" target="middle" className="submenuLink longLink" onClick={() => handleClick(1, "자유")}>자유 게시판</a></li>
-                                <li><a href="#" className="submenuLink longLink" onClick={() => handleClick(2, "정보")}>정보 게시판</a></li>
-                                <li><a href="#" className="submenuLink longLink" onClick={() => handleClick(3, "홍보")}>홍보 게시판</a></li>
+                                <li><a target="middle" className="submenuLink longLink" onClick={() => handleClick(4, "자유")}>자유 게시판</a></li>
+                                <li><a className="submenuLink longLink" onClick={() => handleClick(5, "정보")}>정보 게시판</a></li>
+                                <li><a className="submenuLink longLink" onClick={() => handleClick(6, "홍보")}>홍보 게시판</a></li>
                             </ul>
                         </li>
                         <li>|</li>
-                        <li className="topMenuLi"><a className="menuLink" href="#">Review</a>
+                        <li className="topMenuLi"><a className="menuLink" onClick={() => handleClick(2, "리뷰")}>Review</a>
                             <ul className="submenu">
-                                <li><a href="#" className="submenuLink">식당</a></li>
-                                <li><a href="#" className="submenuLink">카페·베이커리</a></li>
-                                <li><a href="#" className="submenuLink">의료</a></li>
-                                <li><a href="#" className="submenuLink">패션·미용</a></li>
-                                <li><a href="#" className="submenuLink">동물</a></li>
-                                <li><a href="#" className="submenuLink">교육</a></li>
-                                <li><a href="#" className="submenuLink">여가</a></li>
-                                <li><a href="#" className="submenuLink">기타</a></li>
+                                <li><a className="submenuLink" onClick={() => handleClick(7, "식당")}>식당</a></li>
+                                <li><a className="submenuLink" onClick={() => handleClick(8, "카페·베이커리")}>카페·베이커리</a></li>
+                                <li><a className="submenuLink" onClick={() => handleClick(9, "의료")}>의료</a></li>
+                                <li><a className="submenuLink" onClick={() => handleClick(10, "패션·미용")}>패션·미용</a></li>
+                                <li><a className="submenuLink" onClick={() => handleClick(11, "동물")}>동물</a></li>
+                                <li><a className="submenuLink" onClick={() => handleClick(12, "교육")}>교육</a></li>
+                                <li><a className="submenuLink" onClick={() => handleClick(13, "여가")}>여가</a></li>
+                                <li><a className="submenuLink" onClick={() => handleClick(14, "기타")}>기타</a></li>
                             </ul>
                         </li>
                         <li>|</li>
-                        <li className="topMenuLi"><a className="menuLink" href="#">HELP</a>
+                        <li className="topMenuLi"><a className="menuLink" onClick={() => handleClick(3, "긴급")}>HELP</a>
                             <ul className="submenu">
-                                <li><a href="#" className="submenuLink">분실</a></li>
-                                <li><a href="#" className="submenuLink">실종</a></li>
-                                <li><a href="#" className="submenuLink">사고</a></li>
+                                <li><a className="submenuLink" onClick={() => handleClick(15, "분실")}>분실</a></li>
+                                <li><a className="submenuLink" onClick={() => handleClick(16, "실종")}>실종</a></li>
+                                <li><a className="submenuLink" onClick={() => handleClick(17, "사고")}>사고</a></li>
                             </ul>
                         </li>
                         <li>|</li>
@@ -74,35 +73,35 @@ function MainMenu(props) {
                             <tr valign="top">
                                 <td>
                                     <dl>
-                                        <dt><a href="#" target="middle" className="txt" onClick={() => handleClick(1, "자유")}>🆓 자유 게시판</a></dt>
-                                        <dt><a href="#" className="txt" onClick={() => handleClick(2, "정보")}> &nbsp; ℹ &nbsp; 정보 게시판</a></dt>
-                                        <dt><a href="#" className="txt" onClick={() => handleClick(3, "홍보")}>📢 홍보 게시판</a></dt>
+                                        <dt><a target="middle" className="txt" onClick={() => handleClick(4, "자유")}>🆓 자유 게시판</a></dt>
+                                        <dt><a className="txt" onClick={() => handleClick(5, "정보")}> &nbsp; ℹ &nbsp; 정보 게시판</a></dt>
+                                        <dt><a className="txt" onClick={() => handleClick(6, "홍보")}>📢 홍보 게시판</a></dt>
                                     </dl>
                                 </td>
 
                                 <td>
                                     <dl>
-                                        <dt><a href="#" className="txt">🍴 식당</a></dt>
-                                        <dt><a href="#" className="txt">☕ 카페·베이커리</a></dt>
-                                        <dt><a href="#" className="txt">🏥 의료</a></dt>
-                                        <dt><a href="#" className="txt">💄 패션·미용</a></dt>
+                                        <dt><a className="txt" onClick={() => handleClick(7, "식당")}>🍴 식당</a></dt>
+                                        <dt><a className="txt" onClick={() => handleClick(8, "카페·베이커리")}>☕ 카페·베이커리</a></dt>
+                                        <dt><a className="txt" onClick={() => handleClick(9, "의료")}>🏥 의료</a></dt>
+                                        <dt><a className="txt" onClick={() => handleClick(10, "패션·미용")}>💄 패션·미용</a></dt>
                                     </dl>
                                 </td>
 
                                 <td>
                                     <dl>
-                                        <dt><a href="#" className="txt">🐾 동물</a></dt>
-                                        <dt><a href="#" className="txt">🏫 교육</a></dt>
-                                        <dt><a href="#" className="txt">🎉 여가</a></dt>
-                                        <dt><a href="#" className="txt">✴ 기타</a></dt>
+                                        <dt><a className="txt" onClick={() => handleClick(11, "동물")}>🐾 동물</a></dt>
+                                        <dt><a className="txt" onClick={() => handleClick(12, "교육")}>🏫 교육</a></dt>
+                                        <dt><a className="txt" onClick={() => handleClick(13, "여가")}>🎉 여가</a></dt>
+                                        <dt><a className="txt" onClick={() => handleClick(14, "기타")}>✴ 기타</a></dt>
                                     </dl>
                                 </td>
 
                                 <td>
                                     <dl>
-                                        <dt><a href="#" className="txt">🚩 분실</a></dt>
-                                        <dt><a href="#" className="txt">🆘 실종</a></dt>
-                                        <dt><a href="#" className="txt">🚨 사고</a></dt>
+                                        <dt><a className="txt" onClick={() => handleClick(15, "분실")}>🚩 분실</a></dt>
+                                        <dt><a className="txt" onClick={() => handleClick(16, "실종")}>🆘 실종</a></dt>
+                                        <dt><a className="txt" onClick={() => handleClick(17, "사고")}>🚨 사고</a></dt>
                                     </dl>
                                 </td>
                             </tr>

@@ -11,70 +11,25 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
 }
 
-.container {
+.post__parent {
   width: 50%;
   margin: 0 auto;
 }
 
-.info {
-  margin: 5px; /* 원하는 만큼의 간격으로 조절 */
-  padding: 5px;
+.post__container {
+  border: 1px solid #ced4da;
+  padding: 15px;
 }
 
-.name {
-  font-weight: 700;
-  margin: 0;
-}
-
-.date {
-  display: flex;
-  color: grey;
-  font-size: 15px;
-}
-
-.isEdited {
-  padding-left: 5px;
-  color: grey;
-  font-size: 14px;
-}
-
-.option {
-  display: flex;
-  list-style: none;
-  color: grey;
-  margin-left: auto;
-}
-
-.option li {
-  margin-left: 10px;
-}
-
-.title {
-  color: black;
-  font-size: 25px;
-  font-family: Inter;
-  font-weight: 1000;
-  word-wrap: break-word;
-  padding: 10px;
-}
-
-.content {
-  color: black;
-  font-size: 16px;
-  font-family: Inter;
-  font-weight: 400;
-  word-wrap: break-word;
-  padding: 10px;
-}
-
-.userInfo {
+.post__userInfo {
   display: flex;
   flex-wrap: wrap;
 }
 
-.profileImg {
+.post__userInfo img {
   width: 6vh;
   height: 6vh;
   object-fit: cover;
@@ -83,7 +38,59 @@ body {
   border-radius: 10px;
 }
 
-.postImg {
+.post__info {
+  margin: 5px; /* 원하는 만큼의 간격으로 조절 */
+  padding: 5px;
+}
+
+.post__nickname {
+  font-weight: 700;
+  margin: 0;
+}
+
+.post__date {
+  display: flex;
+  color: grey;
+  font-size: 15px;
+}
+
+.post__isEdited {
+  padding-left: 5px;
+  color: grey;
+  font-size: 14px;
+}
+
+.post__option {
+  display: flex;
+  list-style: none;
+  color: grey;
+  margin-left: auto;
+  cursor: pointer;
+}
+
+.post__option li {
+  margin-left: 10px;
+}
+
+.post__title {
+  color: black;
+  font-size: 25px;
+  font-family: Inter;
+  font-weight: 1000;
+  word-wrap: break-word;
+  padding: 10px;
+}
+
+.post__content {
+  color: black;
+  font-size: 16px;
+  font-family: Inter;
+  font-weight: 400;
+  word-wrap: break-word;
+  padding: 10px;
+}
+
+.post__img {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -91,48 +98,36 @@ body {
   padding: 10px;
 }
 
-.postImg img {
+.post__img img {
   width: 90%;
   object-fit: cover;
 }
 
-.likeImg {
-  width: 2.5vh;
-  height: 2.5vh;
-  margin-right: 5px;
-}
-
-.commentImg {
-  width: 2.5vh;
-  height: 2.5vh;
-  margin-right: 5px;
-}
-
-.scrapImg {
-  width: 2.5vh;
-  height: 2.5vh;
-  margin-right: 5px;
-}
-.status {
+.post__status {
   display: flex;
   list-style: none;
   padding: 10px;
   gap: 10px;
 }
 
-.status li {
+.post__status li {
   color: grey;
   display: flex;
   align-items: center; /* 세로축 가운데 정렬 */
   justify-content: center; /* 가로축 가운데 정렬 */
 }
 
-.btnContainer {
+.post__status img {
+  width: 2.5vh;
+  height: 2.5vh;
+  margin-right: 5px;
+}
+
+.post__btnContainer {
   padding: 10px;
 }
 
-.btnLike,
-.btnScrap {
+.post__btnContainer button{
   margin-right: 5px;
   padding: 8px;
   border-radius: 10px;
@@ -141,10 +136,9 @@ body {
   cursor: pointer;
 }
 
-.article {
+.comments {
   border: 1px solid #ced4da;
   padding: 15px;
-  margin: 0;
 }
 
 .writeComment {
@@ -166,7 +160,7 @@ body {
   background-color: #f8f9fa;
 }
 
-.submit {
+.post__submit {
   padding: 8px;
   cursor: pointer;
   background-color: #f8f9fa;

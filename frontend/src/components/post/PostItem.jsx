@@ -1,5 +1,5 @@
 import React from "react";
-import "../../css/Posts.module.css";
+import "../../css/Posts.css";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -22,21 +22,19 @@ export default function PostItem({ item }) {
       });
   };
   return (
-    <div className={styles.item} onClick={handleItemClick}>
-      <div className={styles.title}>{item.title}</div>
-      <div className={styles.content}>{item.content}</div>
-      <ul className={styles.status}>
-        <li className={styles.likeCount}>
+    <div className="posts__item" onClick={handleItemClick}>
+      <div className="posts__title">{item.title}</div>
+      <div className="posts__content">{item.content}</div>
+      <ul className="posts__status">
+        <li>
           <img
             src="https://i.ibb.co/XSqM75N/like.png"
-            className={styles.likeImg}
           />
           {item.likeCount}
         </li>
-        <li className={styles.commentCount}>
+        <li>
           <img
             src="https://i.ibb.co/CQdkB2H/185079-bubble-comment-talk-icon.png"
-            className={styles.commentImg}
           />
           {item.commentCount}
         </li>

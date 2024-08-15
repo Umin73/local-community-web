@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import styles from "../../css/Write.module.css";
+import "../../css/Write.css";
 import axios from "axios";
 import Dropdown  from "../../components/post/Dropdown.jsx";
 
@@ -19,15 +19,17 @@ export default function Write() {
   const fileInputRef = useRef(null);
   const [selectedCategory, setSelectedCategory] = useState('카테고리 선택');
 
-  const handleSelect = (category) => {
+  const handleSelect = (subCategoryId, category) => {
     setSelectedCategory(category);
+    setCategoryId(subCategoryId);
     setView(false); // 선택 후 드롭다운을 닫습니다.
   };
 
   useEffect(() => {
     setCategory(location.state.category);
     setCategoryId(location.state.categoryId);
-    let imgContainers = document.querySelectorAll(`.${styles.imgContainers}`);
+
+    let imgContainers = document.querySelectorAll('.write__imgContainers');
     if (!previewImg || previewImg.length === 0) {
       imgContainers.forEach((container) => {
         container.style.padding = "0";
@@ -40,6 +42,9 @@ export default function Write() {
       });
     }
   }, [previewImg]);
+
+  const validCategoryIds = [1, 2, 3];
+  const shouldShowCategorySelector = validCategoryIds.includes(Number(location.state.categoryId));
 
   function uploadFile(e) {
     let fileArr = Array.from(e.target.files);
@@ -109,50 +114,51 @@ export default function Write() {
   };
 
   return (
-    <div className={styles.root}>
+    <div className="root">
       <h2>{category} 게시판</h2>
-      <div className={styles.parent}>
-        <div className={styles.container}>
-          <ul className={styles.flexContainer}>
-              <li className={styles.categorySelector} onClick={() => {setView(!view)}}>
-                {selectedCategory}{" "}
-                <div className={styles.arrow}>
-                  {view ? <img src="https://town-in.s3.ap-northeast-2.amazonaws.com/home/arrows_up.png" className={styles.upAndDown} /> : <img src="https://town-in.s3.ap-northeast-2.amazonaws.com/home/arrows_down.png" className={styles.upAndDown}/>}
+      <div className="write__parent">
+      <ul className="flexContainer">
+            {shouldShowCategorySelector && (
+              <li className="categorySelector" onClick={() => {setView(!view)}}>
+                {selectedCategory}
+                <div className="arrow">
+                  {view ? <img src="https://town-in.s3.ap-northeast-2.amazonaws.com/home/arrows_up.png" className="upAndDown"
+                   /> : <img src="https://town-in.s3.ap-northeast-2.amazonaws.com/home/arrows_down.png" className="upAndDown"/>}
                 </div>
-                {view && <Dropdown onSelect={handleSelect} />}
+                {view && <Dropdown categoryId={categoryId} onSelect={handleSelect} />}
               </li>
-              <li>
+              )}
+              <li className="flexItem">
                 <input
-                  className={styles.input}
+                  className="write__title"
                   type="text"
                   placeholder="제목을 입력하세요."
                   onChange={(event) => setTitle(event.target.value)}/>
               </li>
           </ul>
           <textarea
-            className={styles.textarea}
+            className="textarea"
             type="text"
             placeholder="내용을 입력하세요."
             rows="15"
             onChange={(event) => setContent(event.target.value)}
           />
-          <div className={styles.imgContainers}>
+          <div className="write__imgContainers">
             {previewImg.map((item, index) => (
-              <div key={index} className={styles.imgItem}>
+              <div key={index}>
                 <img
                   src={item}
                   alt={`Image ${index + 1}`}
-                  className={styles.previewImg}
+                  className="write__previewImg"
                   onClick={() => deleteImage(index)}
                 />
               </div>
             ))}
           </div>
           <form onSubmit={handleSubmit}>
-            <div className={styles.btnContainer}>
-              <label className={styles.inputFileButton} htmlFor="input-file">
+            <div className="write__btnContainer">
+              <label htmlFor="input-file">
                 <img
-                  className={styles.inputFileImg}
                   src="https://i.ibb.co/LS8qx0w/1976059-camera-images-photo-picture-icon.png"
                   alt="upload icon"
                 />
@@ -167,10 +173,9 @@ export default function Write() {
                 style={{ display: "none" }}
               />
 
-              <input type="submit" className={styles.submit} value="작성" />
+              <input type="submit" className="write__submit" value="작성" />
             </div>
           </form>
-        </div>
       </div>
     </div>
   );

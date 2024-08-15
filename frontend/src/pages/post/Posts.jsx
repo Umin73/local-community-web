@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
-import PostItem from "./postItem";
-import styles from "../../css/Posts.module.css";
+import PostItem from "../../components/post/PostItem";
+import "../../css/Posts.css";
 import axios from "axios";
 
 export default function Posts() {
@@ -10,12 +10,13 @@ export default function Posts() {
   const location = useLocation();
   const [category, setCategory] = useState(null);
 
+
   const query = new URLSearchParams(location.search);
   const initialPage = parseInt(query.get("page")) || 0; // 페이지 번호는 0부터 시작
   const [currentPage, setCurrentPage] = useState(initialPage);
 
-  const [list, setList] = useState([]);
-  const [totalPages, setTotalPages] = useState(0);
+  const [page, setPage] = useState(1);
+  const [postList, setPostList] = useState([]);
 
   useEffect(() => {
     const { category } = location.state || {};
@@ -29,9 +30,7 @@ export default function Posts() {
             params: { page: currentPage },
           }
         );
-        const postList = postListResponse.data;
-        setList(postList.content); // 실제 포스트 리스트
-        setTotalPages(postList.totalPages);
+        setPostList(postListResponse.data.content); // 실제 포스트 리스트
       } catch (err) {
         console.log("error : ", err);
       }
@@ -39,50 +38,29 @@ export default function Posts() {
     fetchData();
   }, [categoryId, currentPage]);
 
+
   useEffect(() => {
     navigate(`?page=${currentPage}`, { replace: true });
   }, [currentPage, navigate]);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  const pageButtons = [];
-  for (let i = 0; i < totalPages; i++) {
-    pageButtons.push(
-      <button
-        key={i}
-        onClick={() => paginate(i)}
-        className={currentPage === i ? styles.active : null}
-      >
-        {i + 1}
-      </button>
-    );
-  }
-
   return (
-    <div className={styles.root}>
+    <div className="root">
       <h2>{category} 게시판</h2>
-      <div className={styles.search}>
+      <div className="search">
         <input
           type="text"
           placeholder="글 제목, 내용, 해시태그"
-          className={styles.input}
         />
-        <button className={styles.searchBtn}>검색</button>
+        <button>검색</button>
       </div>
-      <div className={styles.listContainer}>
-        <div className={styles.container}>
-          <div className={styles.itemsContainer}>
-            {list.map((item, index) => (
+          {postList.map((item, index) => (
               <PostItem key={index} item={item} />
-            ))}
-          </div>
-        </div>
-        <div className={styles.paginationContainer}>
-          <div className={styles.pagination}>{pageButtons}</div>
-        </div>
-        <div className={styles.btnContainer}>
+          ))}
+        <div className="paginationContainer">{page}</div>
+        <div className="posts__btnContainer">
           <button
-            className={styles.btn}
             onClick={() => {
               navigate("/post/create", {
                 state: {
@@ -96,6 +74,5 @@ export default function Posts() {
           </button>
         </div>
       </div>
-    </div>
   );
 }

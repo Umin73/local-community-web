@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styles from "../../css/Comment.module.css";
+import  "../../css/Comment.css";
 import axios from "axios";
 
 export default function CommentItem({ userToken, item, postId }) {
@@ -118,43 +118,42 @@ export default function CommentItem({ userToken, item, postId }) {
   };
 
   return (
-    <div className={styles.parent}>
-      <div className={styles.commentInfo}>
-        <img src="https://cf-fpi.everytime.kr/0.png" className={styles.img} />
-        <div className={styles.commentName}>{item.nickname}</div>
-        <div className={styles.commenteDate}>
+    <div>
+      <div className="commentInfo">
+        <img src="https://cf-fpi.everytime.kr/0.png" />
+        <div className="comment__nickname">{item.nickname}</div>
+        <div className="comment__date">
           {item.isEdited ? item.modifiedDate : item.createdDate}
         </div>
-        <div className={styles.isEdited}>{item.isEdited ? "(수정됨)" : ""}</div>
+        <div className="comment__isEdited">{item.isEdited ? "(수정됨)" : ""}</div>
 
-        <ul className={styles.option}>
-          <li className={styles.childcomment}>
+        <ul className="comment__option">
+          <li>
             <button
-              className={styles.replyBtn}
               onClick={() => toggleReplyInput(item.commentId)}
             >
               대댓글
             </button>
           </li>
-          <li className={styles.commentvote}>
-            <a href="#" onClick={(event) => likeComment(event, item.commentId)}>
+          <li>
+            <button onClick={(event) => likeComment(event, item.commentId)}>
               추천
-            </a>
+            </button>
           </li>
-          <li className={styles.edit}>
-            <a href="#" onClick={() => toggleEdit(item.commentId)}>
+          <li>
+            <button onClick={() => toggleEdit(item.commentId)}>
               {editStates[item.commentId] ? "수정 취소" : "수정"}
-            </a>
+            </button>
           </li>
-          <li className={styles.delete}>
-            <a href="#" onClick={() => deleteComment(item.commentId)}>
+          <li>
+            <button onClick={() => deleteComment(item.commentId)}>
               삭제
-            </a>
+            </button>
           </li>
         </ul>
       </div>
       {editStates[item.commentId] ? (
-        <div className={styles.editComment}>
+        <div className="editComment">
           <input
             type="text"
             value={editedContents[item.commentId] || ""}
@@ -164,40 +163,36 @@ export default function CommentItem({ userToken, item, postId }) {
                 [item.commentId]: e.target.value,
               })
             }
-            className={styles.editText}
           />
           <button
             onClick={() => editComment(item.commentId)}
-            className={styles.editBtn}
           >
             수정
           </button>
         </div>
       ) : (
-        <p className={styles.content}>{item.content}</p>
+        <p className="comment__content">{item.content}</p>
       )}
-      <ul className={styles.status}>
-        <li className={styles.likeCount}>
+      <ul className="comment__status">
+        <li>
           <img
             src="https://i.ibb.co/XSqM75N/like.png"
-            className={styles.likeImg}
           />
           {item.likeCount}
         </li>
       </ul>
       {item.children &&
         item.children.map((item) => (
-          <div key={item.commentId} className={styles.reply}>
-            <div className={styles.replyInfo}>
+          <div key={item.commentId} className="reply">
+            <div className="commentInfo">
               <img
                 src="https://cf-fpi.everytime.kr/0.png"
-                className={styles.img}
                 alt="User"
               />
-              <div className={styles.commentName}>{item.nickname}</div>
-              <div className={styles.commenteDate}>{item.createdDate}</div>
-              <ul className={styles.option}>
-                <li className={styles.replyVote}>
+              <div className="comment__nickname">{item.nickname}</div>
+              <div className="comment__date">{item.createdDate}</div>
+              <ul className="comment__option">
+                <li>
                   <a
                     href="#"
                     onClick={(event) => likeComment(event, item.commentId)}
@@ -205,12 +200,12 @@ export default function CommentItem({ userToken, item, postId }) {
                     추천
                   </a>
                 </li>
-                <li className={styles.delete}>
+                <li>
                   <a href="#" onClick={() => deleteComment(item.commentId)}>
                     삭제
                   </a>
                 </li>
-                <li className={styles.edit}>
+                <li>
                   <a href="#" onClick={() => toggleEdit(item.commentId)}>
                     {editStates[item.commentId] ? "수정 취소" : "수정"}
                   </a>
@@ -218,7 +213,7 @@ export default function CommentItem({ userToken, item, postId }) {
               </ul>
             </div>
             {editStates[item.commentId] ? (
-              <div className={styles.editComment}>
+              <div className="editComment">
                 <input
                   type="text"
                   value={editedContents[item.commentId] || ""}
@@ -228,23 +223,20 @@ export default function CommentItem({ userToken, item, postId }) {
                       [item.commentId]: e.target.value,
                     })
                   }
-                  className={styles.editText}
                 />
                 <button
                   onClick={() => editComment(item.commentId)}
-                  className={styles.editBtn}
                 >
                   수정
                 </button>
               </div>
             ) : (
-              <p className={styles.content}>{item.content}</p>
+              <p className="comment__conten">{item.content}</p>
             )}
-            <ul className={styles.status}>
-              <li className={styles.likeCount}>
+            <ul className="comment__status">
+              <li>
                 <img
                   src="https://i.ibb.co/XSqM75N/like.png"
-                  className={styles.likeImg}
                 />
                 {item.likeCount}
               </li>
@@ -252,14 +244,12 @@ export default function CommentItem({ userToken, item, postId }) {
           </div>
         ))}
       {replyInputs.some((input) => input.parentId === item.commentId) && (
-        <div className={styles.writeReply}>
+        <div className="writeReply">
           <input
-            className={styles.replyText}
             onChange={(e) => setReplyContent(e.target.value)}
           />
           <button
             onClick={() => addReply(item.commentId)}
-            className={styles.submit}
           >
             작성
           </button>

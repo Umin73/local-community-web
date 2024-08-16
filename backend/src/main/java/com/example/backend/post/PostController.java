@@ -58,23 +58,17 @@ public class PostController {
     public ResponseEntity<Page<PostListResponse>> getPostList(@RequestParam(value = "categoryId", required = false) Long categoryId, @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC)
     Pageable pageable, @RequestParam(value = "keyword", required = false) String keyword) {
 
-        System.out.println(pageable);
         Page<PostListResponse> postList = null;
         if (categoryId != null) { // category 안에서 X
             if (keyword == null) { // 키워드 검색 X
                 postList = postService.getPostsByCategoryId(categoryId, pageable);
             } else { // 키워드 검색 O
-                //postList = postService.searchPostsByCategoryId(categoryId, keyword, pageable);
+                postList = postService.searchPostsByCategoryId(categoryId, keyword, pageable);
             }
-        } else { // 홈에서 키워드 검색
-            if (keyword == null) {
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            } else {
-                postList = postService.searchPosts(pageable);
-            }
+        } else { // 홈화면에서 키워드 검색 {
+            postList = postService.searchPosts(keyword, pageable);
         }
-        Page<PostListResponse> posts = postService.getPostsByCategoryId(categoryId, pageable);
-        return ResponseEntity.ok(posts);
+        return ResponseEntity.ok(postList);
     }
 
     @PutMapping("/post/{postId}/edit")

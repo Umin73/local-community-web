@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
     //게시글 관련 repository
-    Page<Post> findByCategoryIdOrderByIdDesc(Long categoryId, Pageable pageable);
+    Page<Post> findByTitleContainingOrContentContaining(String keywordTitle, String keywordContent, Pageable pageable);
     Page<Post> findByCategoryId(Long categoryId, Pageable pageable);
-    //Page<Post> findByCategoryIdAndTitleContainingAndContentContaining(Long categoryId, String keyword, Pageable pageable);
+    Page<Post> findByCategoryIdAndTitleContainingOrContentContaining(Long categoryId, String keywordTitle, String keywordContent, Pageable pageable);
 }

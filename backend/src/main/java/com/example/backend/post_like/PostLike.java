@@ -3,8 +3,14 @@ package com.example.backend.post_like;
 import com.example.backend.post.Post;
 import com.example.backend.user.User;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 public class PostLike {
@@ -18,35 +24,8 @@ public class PostLike {
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;
 
-    public PostLike() {
-
-    }
-
     public PostLike(User user, Post post) {
         this.user = user;
-        this.post = post;
-    }
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Post getPost() {
-        return post;
-    }
-
-    public void setPost(Post post) {
         this.post = post;
     }
 }

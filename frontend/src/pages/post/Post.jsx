@@ -6,21 +6,30 @@ import CommentItem from "../../components/post/CommentItem";
 
 export default function Post() {
   const { postId } = useParams(); // useParams 훅을 사용하여 postId 가져오기
-  console.log(postId);
   const navigate = useNavigate();
-
   const location = useLocation();
-
+  const [category, setCategory] = useState(null);
+  const [categoryId, setCategoryId] = useState(null);
   const [post, setPost] = useState(location.state || null);
   const [commentInput, setCommentInput] = useState("");
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:8080/post/${postId}`, { params: { userId: 1 } })
-      .then((response) => {
-        setPost(response.data);
-      })
-      .catch((err) => console.log(err));
+    const fetchData = async () => {
+      try {
+        const postResponse = await axios.get(`http://localhost:8080/post/${postId}`, { params: { userId: 1 } });
+        const postData = postResponse.data;
+        setPost(postData);
+        setCategoryId(postData.categoryId);
+
+        if (postData && postData.categoryId) {
+          const categoryResponse = await axios.get(`http://localhost:8080/category/${postData.categoryId}`);
+          setCategory(categoryResponse.data);
+        }
+      } catch (err) {
+        console.log('Error fetching data:', err);
+      }
+    };
+    fetchData();
   }, [postId]);
 
   if (!post) {
@@ -92,11 +101,11 @@ export default function Post() {
   };
 
   const editPost = (event) => {
-    const name = "리뷰";
     event.preventDefault();
     navigate(`/post/${postId}/edit`, {
       state: {
-        name: name,
+        category: category,
+        categoryId: categoryId,
         postId: postId,
         title: post.title,
         content: post.content,
@@ -126,7 +135,7 @@ export default function Post() {
   return (
     <div className="root">
       <div>
-        <h2>리뷰 게시판</h2>
+        <h2>{category} 게시판</h2>
       </div>
       <div className="post__parent">
       <div className="post__container">
@@ -172,19 +181,19 @@ export default function Post() {
           <ul className="post__status">
             <li>
               <img
-                src="https://i.ibb.co/K5Jg7hC/like.png"
+                src="https://town-in.s3.ap-northeast-2.amazonaws.com/home/like.png"
               />
               {post.likeCount}
             </li>
             <li>
               <img
-                src="https://i.ibb.co/CQdkB2H/185079-bubble-comment-talk-icon.png"
+                src="https://town-in.s3.ap-northeast-2.amazonaws.com/home/comment.png"
               />
               {post.commentCount}
             </li>
             <li>
               <img
-                src="https://i.ibb.co/42n3qPn/172558-star-icon.png"
+                src="https://town-in.s3.ap-northeast-2.amazonaws.com/home/star.png"
               />
               {post.scrapCount}
             </li>
@@ -198,20 +207,19 @@ export default function Post() {
             </button>
           </div>
         </div>
-        <div>
+        {post.comments && post.comments.length > 0 && (
           <div className="comments">
-            {post.comments &&
-              post.comments.map((comment, commentIndex) => (
-                <div key={commentIndex}>
-                  <CommentItem
-                    key={`comment-${comment.id}`} // 이 부분을 comment.id로 변경하여 고유한 key를 사용합니다.
-                    item={comment}
-                    postId={postId}
-                  />
-                </div>
-              ))}
-            </div>
-        </div>
+            {post.comments.map((comment, commentIndex) => (
+              <div key={commentIndex}>
+                <CommentItem
+                  key={`comment-${comment.id}`}
+                  item={comment}
+                  postId={postId}
+                />
+              </div>
+            ))}
+          </div>
+        )}
         <form onSubmit={createComment}>
           <div className="writeComment">
             <input
@@ -225,6 +233,6 @@ export default function Post() {
           </div>
         </form>
       </div>
-      </div>
+    </div>
   );
 }

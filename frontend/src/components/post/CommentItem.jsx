@@ -176,7 +176,7 @@ export default function CommentItem({ userToken, item, postId }) {
       <ul className="comment__status">
         <li>
           <img
-            src="https://i.ibb.co/XSqM75N/like.png"
+            src="https://town-in.s3.ap-northeast-2.amazonaws.com/home/like.png"
           />
           {item.likeCount}
         </li>
@@ -193,22 +193,21 @@ export default function CommentItem({ userToken, item, postId }) {
               <div className="comment__date">{item.createdDate}</div>
               <ul className="comment__option">
                 <li>
-                  <a
-                    href="#"
+                  <button
                     onClick={(event) => likeComment(event, item.commentId)}
                   >
                     추천
-                  </a>
+                  </button>
                 </li>
                 <li>
-                  <a href="#" onClick={() => deleteComment(item.commentId)}>
+                  <button onClick={() => deleteComment(item.commentId)}>
                     삭제
-                  </a>
+                  </button>
                 </li>
                 <li>
-                  <a href="#" onClick={() => toggleEdit(item.commentId)}>
+                  <button onClick={() => toggleEdit(item.commentId)}>
                     {editStates[item.commentId] ? "수정 취소" : "수정"}
-                  </a>
+                  </button>
                 </li>
               </ul>
             </div>
@@ -231,12 +230,12 @@ export default function CommentItem({ userToken, item, postId }) {
                 </button>
               </div>
             ) : (
-              <p className="comment__conten">{item.content}</p>
+              <p className="comment__content">{item.content}</p>
             )}
             <ul className="comment__status">
               <li>
                 <img
-                  src="https://i.ibb.co/XSqM75N/like.png"
+                  src="https://town-in.s3.ap-northeast-2.amazonaws.com/home/like.png"
                 />
                 {item.likeCount}
               </li>

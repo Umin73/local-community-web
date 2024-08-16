@@ -29,64 +29,8 @@ h2 {
 }
 
 
-.flexContainer {
-  display: flex;
-  align-items: center;
-  list-style: none;
-  width: 100%; /* 부모 요소의 전체 너비 사용 */
-  gap: 10px; /* 요소 간의 간격 */
-}
 
-.categorySelector {
-  flex-shrink: 0;
-  width: 140px; /* 고정된 너비 설정 */
-  padding: 15px;
-  cursor: pointer;
-  border: 1px solid #ccc;
-  white-space: nowrap;
-  text-align: left;
-  position: relative;
-  padding-right: 40px; /* 화살표를 위한 여유 공간 추가 */
-  box-sizing: border-box;
-}
-
-.dropdownMenu {
-  position: absolute;
-  width: 100%;
-  top: calc(100% + 5px); /* 부모 요소 바로 아래에 배치 (간격 포함) */
-  left: 0;
-  background-color: white;
-  border: 1px solid #ddd;
-  padding: 10px;
-  margin: 0;
-  list-style: none;
-  z-index: 1000;
-}
-
-.dropdownMenu li {
-  padding: 8px;
-  cursor: pointer;
-}
-
-.arrow {
-  position: absolute;
-  right: 10px; /* 부모 요소의 오른쪽 끝에 고정 */
-  top: 50%; /* 부모 요소의 중앙에 위치 */
-  transform: translateY(-50%); /* 세로 중앙 정렬 */
-  display: flex;
-  align-items: center; /* 화살표 이미지의 세로 중앙 정렬 */
-}
-
-.upAndDown {
-  width: 16px; /* 화살표 이미지 크기 */
-  height: 16px; /* 화살표 이미지 크기 */
-}
-
-.flexItem {
-  flex-grow: 1; /* 남은 모든 공간을 차지 */
-}
-
-.flexContainer input {
+.write__title {
   width: 100%; /* 부모의 전체 너비 사용 */
   border: 1px solid #ced4da;
   font-size: 18px;

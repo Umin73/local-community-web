@@ -15,7 +15,7 @@ body {
 }
 
 .post__parent {
-  width: 50%;
+  width: 40%;
   margin: 0 auto;
 }
 
@@ -45,7 +45,7 @@ body {
 
 .post__nickname {
   font-weight: 700;
-  margin: 0;
+  margin-bottom: 5px;
 }
 
 .post__date {

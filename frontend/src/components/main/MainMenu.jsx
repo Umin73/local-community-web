@@ -30,7 +30,7 @@ function MainMenu(props) {
                     <ul>
                         <li className="topMenuLi"> <a className="menuLink" href="#">About us</a></li>
                         <li>|</li>
-                        <li className="topMenuLi"><a className="menuLink" onClick={() => handleClick(1, "커뮤니티")}>Comunity</a>
+                        <li className="topMenuLi"><a className="menuLink">Comunity</a>
                             <ul className="submenu">
                                 <li><a target="middle" className="submenuLink longLink" onClick={() => handleClick(4, "자유")}>자유 게시판</a></li>
                                 <li><a className="submenuLink longLink" onClick={() => handleClick(5, "정보")}>정보 게시판</a></li>
@@ -38,7 +38,7 @@ function MainMenu(props) {
                             </ul>
                         </li>
                         <li>|</li>
-                        <li className="topMenuLi"><a className="menuLink" onClick={() => handleClick(2, "리뷰")}>Review</a>
+                        <li className="topMenuLi"><a className="menuLink">Review</a>
                             <ul className="submenu">
                                 <li><a className="submenuLink" onClick={() => handleClick(7, "식당")}>식당</a></li>
                                 <li><a className="submenuLink" onClick={() => handleClick(8, "카페·베이커리")}>카페·베이커리</a></li>
@@ -51,7 +51,7 @@ function MainMenu(props) {
                             </ul>
                         </li>
                         <li>|</li>
-                        <li className="topMenuLi"><a className="menuLink" onClick={() => handleClick(3, "긴급")}>HELP</a>
+                        <li className="topMenuLi"><a className="menuLink">HELP</a>
                             <ul className="submenu">
                                 <li><a className="submenuLink" onClick={() => handleClick(15, "분실")}>분실</a></li>
                                 <li><a className="submenuLink" onClick={() => handleClick(16, "실종")}>실종</a></li>

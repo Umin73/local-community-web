@@ -2,48 +2,64 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import PostItem from "../../components/post/PostItem";
 import "../../css/Posts.css";
+import Pagination from "react-js-pagination";
 import axios from "axios";
 
 export default function Posts() {
   const { categoryId } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const [category, setCategory] = useState(null);
-
+  const [category, setCategory] = useState(location.state.category || {});
 
   const query = new URLSearchParams(location.search);
   const initialPage = parseInt(query.get("page")) || 0; // 페이지 번호는 0부터 시작
   const [currentPage, setCurrentPage] = useState(initialPage);
-
   const [page, setPage] = useState(1);
+  const [searchKeyword, setSearchKeyword] = useState(null);
+  const [totalPages, setTotalPages] = useState(0);
   const [postList, setPostList] = useState([]);
 
-  useEffect(() => {
-    const { category } = location.state || {};
-    setCategory(category);
 
-    const fetchData = async () => {
-      try {
-        const postListResponse = await axios.get(
-          `http://localhost:8080/posts/${categoryId}`,
-          {
-            params: { page: currentPage },
+  const fetchPosts = async (page) => {
+    try {
+      const postListResponse = await axios.get(
+        `http://localhost:8080/posts`,
+        {
+          params: {
+            categoryId: categoryId,
+            page: page - 1,
+            size: 5,
+            keyword: searchKeyword || null,
           }
-        );
-        setPostList(postListResponse.data.content); // 실제 포스트 리스트
-      } catch (err) {
-        console.log("error : ", err);
-      }
-    };
-    fetchData();
-  }, [categoryId, currentPage]);
+        }
+      );
+      setPostList(postListResponse.data.content);
+      setCategory(category);
+      setTotalPages(postListResponse.data.totalPages);
+      setCurrentPage(page);
+    } catch (err) {
+      console.log("error : ", err);
+    }
+  };
 
+  const handlePageChange = (pageNumber) => {
+    fetchPosts(pageNumber);
+  };
+
+  const searchPosts = async (event) => {
+     event.preventDefault();
+    if (!searchKeyword) {
+      alert("검색어를 입력하세요.");
+      return;
+    }
+    setCurrentPage(1);
+    fetchPosts(1);
+  };
 
   useEffect(() => {
-    navigate(`?page=${currentPage}`, { replace: true });
-  }, [currentPage, navigate]);
+    fetchPosts(currentPage);
+  }, [currentPage]);
 
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
     <div className="root">
@@ -52,13 +68,22 @@ export default function Posts() {
         <input
           type="text"
           placeholder="글 제목, 내용, 해시태그"
-        />
-        <button>검색</button>
+          onChange={(event) => setSearchKeyword(event.target.value)}/>
+        <button onClick={searchPosts}>검색</button>
       </div>
-          {postList.map((item, index) => (
-              <PostItem key={index} item={item} />
-          ))}
-        <div className="paginationContainer">{page}</div>
+      {postList.map((item, index) => (
+        <PostItem key={index} item={item} />
+      ))}
+      <div className="paginationAndButtonContainer">
+        <div className="paginationContainer">
+          <Pagination
+            activePage={currentPage}
+            itemsCountPerPage={5}
+            totalItemsCount={totalPages * 5}
+            pageRangeDisplayed={5}
+            onChange={handlePageChange}
+          />
+        </div>
         <div className="posts__btnContainer">
           <button
             onClick={() => {
@@ -74,5 +99,6 @@ export default function Posts() {
           </button>
         </div>
       </div>
+    </div>
   );
 }

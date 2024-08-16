@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "../../css/Write.css";
 import axios from "axios";
-import Dropdown  from "../../components/post/Dropdown.jsx";
 
 export default function Write() {
   const userId = 1;
@@ -13,18 +12,11 @@ export default function Write() {
   const [category, setCategory] = useState();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [view, setView] = useState(false); 
   const [previewImg, setPreviewImg] = useState([]);
   const [files, setFiles] = useState([]);
   const fileInputRef = useRef(null);
-  const [selectedCategory, setSelectedCategory] = useState('카테고리 선택');
 
-  const handleSelect = (subCategoryId, category) => {
-    setSelectedCategory(category);
-    setCategoryId(subCategoryId);
-    setView(false); // 선택 후 드롭다운을 닫습니다.
-  };
-
+  
   useEffect(() => {
     setCategory(location.state.category);
     setCategoryId(location.state.categoryId);
@@ -42,9 +34,6 @@ export default function Write() {
       });
     }
   }, [previewImg]);
-
-  const validCategoryIds = [1, 2, 3];
-  const shouldShowCategorySelector = validCategoryIds.includes(Number(location.state.categoryId));
 
   function uploadFile(e) {
     let fileArr = Array.from(e.target.files);
@@ -117,25 +106,11 @@ export default function Write() {
     <div className="root">
       <h2>{category} 게시판</h2>
       <div className="write__parent">
-      <ul className="flexContainer">
-            {shouldShowCategorySelector && (
-              <li className="categorySelector" onClick={() => {setView(!view)}}>
-                {selectedCategory}
-                <div className="arrow">
-                  {view ? <img src="https://town-in.s3.ap-northeast-2.amazonaws.com/home/arrows_up.png" className="upAndDown"
-                   /> : <img src="https://town-in.s3.ap-northeast-2.amazonaws.com/home/arrows_down.png" className="upAndDown"/>}
-                </div>
-                {view && <Dropdown categoryId={categoryId} onSelect={handleSelect} />}
-              </li>
-              )}
-              <li className="flexItem">
-                <input
-                  className="write__title"
-                  type="text"
-                  placeholder="제목을 입력하세요."
-                  onChange={(event) => setTitle(event.target.value)}/>
-              </li>
-          </ul>
+            <input
+              className="write__title"
+              type="text"
+              placeholder="제목을 입력하세요."
+              onChange={(event) => setTitle(event.target.value)}/>
           <textarea
             className="textarea"
             type="text"
@@ -159,7 +134,7 @@ export default function Write() {
             <div className="write__btnContainer">
               <label htmlFor="input-file">
                 <img
-                  src="https://i.ibb.co/LS8qx0w/1976059-camera-images-photo-picture-icon.png"
+                  src="https://town-in.s3.ap-northeast-2.amazonaws.com/home/camera.png"
                   alt="upload icon"
                 />
               </label>

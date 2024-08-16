@@ -28,13 +28,13 @@ export default function PostItem({ item }) {
       <ul className="posts__status">
         <li>
           <img
-            src="https://i.ibb.co/XSqM75N/like.png"
+            src="https://town-in.s3.ap-northeast-2.amazonaws.com/home/like.png"
           />
           {item.likeCount}
         </li>
         <li>
           <img
-            src="https://i.ibb.co/CQdkB2H/185079-bubble-comment-talk-icon.png"
+            src="https://town-in.s3.ap-northeast-2.amazonaws.com/home/comment.png"
           />
           {item.commentCount}
         </li>

@@ -99,19 +99,18 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public Page<PostListResponse> getPostsByCategoryId(Long categoryId, Pageable pageable) {
-        Page<Post> posts = postRepository.findByCategoryIdOrderByIdDesc(categoryId, pageable);
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new IllegalArgumentException("Invalid category ID"));
+        Page<Post> posts = postRepository.findByCategoryId(categoryId, pageable);
         return posts.map(PostListResponse::toDto);
     }
-
-    //@Transactional(readOnly = true)
-    //public Page<PostListResponse> searchPostsByCategoryId(Long categoryId, String keyword, Pageable pageable) {
-    //    Page<Post> posts = postRepository.findByCategoryIdAndTitleContainingAndContentContaining(categoryId, keyword, pageable);
-    //    return posts.map(PostListResponse::toDto);
-    //}
-
     @Transactional(readOnly = true)
-    public Page<PostListResponse> searchPosts(Pageable pageable) {
-        Page<Post> posts = postRepository.findAll(pageable);
+    public Page<PostListResponse> searchPostsByCategoryId(Long categoryId, String keyword, Pageable pageable) {
+        Page<Post> posts = postRepository.findByCategoryIdAndTitleContainingOrContentContaining(categoryId, keyword, keyword, pageable);
+        return posts.map(PostListResponse::toDto);
+    }
+    @Transactional(readOnly = true)
+    public Page<PostListResponse> searchPosts(String keyword, Pageable pageable) {
+        Page<Post> posts = postRepository.findByTitleContainingOrContentContaining(keyword, keyword, pageable);
         return posts.map(PostListResponse::toDto);
     }
 
@@ -148,7 +147,7 @@ public class PostService {
             }
         }
         // 게시글 업데이트
-        post.update(postEditRequest);
+        post.update(postEditRequest.getTitle(), postEditRequest.getContent(), postEditRequest.isEdited());
         return postId;
     }
     @Transactional

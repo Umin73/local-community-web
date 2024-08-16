@@ -1,12 +1,19 @@
 import React from 'react'
 import styled from 'styled-components';
+import '../../css/MyPage.css';
+import Header from "../../components/my/Header";
+import Sidebar from "../../components/my/Sidebar";
 
 export default function MyComment() {
     return (
         <>
-        <Mypost> 
-            <Title>댓글 단 글</Title>
-        </Mypost>
+            <Header/>
+            <div className="side-wrap">
+                <Sidebar/>
+            </div>
+            <Mypost>
+                <Title>댓글 단 글</Title>
+            </Mypost>
         </>
     );
 }

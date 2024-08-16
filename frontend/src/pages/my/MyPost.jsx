@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { myPostData } from "../../data/myPostData";
 import Pagination from "react-js-pagination";
+import Header from "../../components/my/Header";
+import Sidebar from "../../components/my/Sidebar";
+import '../../css/MyPage.css';
 
 export default function MyPost() {
   const rpp = 1; //한페이지에 5개씩
@@ -21,48 +24,54 @@ export default function MyPost() {
   }, [startIndex, lastIndex, page]);
 
   return (
-    <>
-      <Mypost>
-        <Title>내가 쓴 글</Title>
-        <div>
-          {currentPost.map((data) => {
-            return (
-              <>
-                <Box>
-                  <Board>{data.board + " 게시판"}</Board>
-                  <Content>{data.content}</Content>
-                  <p />
-                  <p />
-                  <p />
-                  <Bottom>
-                    <Date>{data.date}</Date>
-                    <LikeComment>
-                      {"좋아요 " + data.likes}
-                      &nbsp;&nbsp;&nbsp;&nbsp;
-                      {"댓글 " + data.commentCount}
-                    </LikeComment>
-                  </Bottom>
-                </Box>
-              </>
-            );
-          })}
-          <PgBox>
-            <Pagination
-              activePage={page}
-              itemsCountPerPage={rpp}
-              totalItemsCount={myPostData.length}
-              pageRangeDisplayed={5}
-              onChange={handlePageChange}
-            />
-          </PgBox>
+      <>
+        <div className="root-wrap">
+          <Header/>
         </div>
-      </Mypost>
-    </>
+        <div className="side-wrap">
+          <Sidebar/>
+        </div>
+        <Mypost>
+          <Title>내가 쓴 글</Title>
+          <div>
+            {currentPost.map((data) => {
+              return (
+                  <>
+                    <Box>
+                      <Board>{data.board + " 게시판"}</Board>
+                      <Content>{data.content}</Content>
+                      <p/>
+                      <p/>
+                      <p/>
+                      <Bottom>
+                        <Date>{data.date}</Date>
+                        <LikeComment>
+                          {"좋아요 " + data.likes}
+                          &nbsp;&nbsp;&nbsp;&nbsp;
+                          {"댓글 " + data.commentCount}
+                        </LikeComment>
+                      </Bottom>
+                    </Box>
+                  </>
+              );
+            })}
+            <PgBox>
+              <Pagination
+                  activePage={page}
+                  itemsCountPerPage={rpp}
+                  totalItemsCount={myPostData.length}
+                  pageRangeDisplayed={5}
+                  onChange={handlePageChange}
+              />
+            </PgBox>
+          </div>
+        </Mypost>
+      </>
   );
 }
 
 const Mypost = styled.div`
-  margin-left: 350px;
+  margin-left: 400px;
   margin-right: 50px;
   width: 60%;
   justify-content: space-around;

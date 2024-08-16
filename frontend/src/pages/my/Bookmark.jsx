@@ -1,12 +1,20 @@
 import React from 'react'
 import styled from 'styled-components';
+import Header from "../../components/my/Header";
+import Sidebar from "../../components/my/Sidebar";
 
 export default function Bookmark() {
     return (
         <>
-        <Mypost> 
-            <Title>북마크</Title>
-        </Mypost>
+            <div className="root-wrap">
+                <Header/>
+            </div>
+            <div className="side-wrap">
+                <Sidebar/>
+            </div>
+            <Mypost>
+                <Title>북마크</Title>
+            </Mypost>
         </>
     );
 }

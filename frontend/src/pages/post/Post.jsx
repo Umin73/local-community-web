@@ -154,14 +154,14 @@ export default function Post() {
             </div>
             <ul className="post__option">
               <li>
-                <a onClick={editPost}>
+                <button onClick={editPost}>
                   수정
-                </a>
+                </button>
               </li>
               <li>
-                <a onClick={deletePost}>
+                <button onClick={deletePost}>
                   삭제
-                </a>
+                </button>
               </li>
             </ul>
           </div>
@@ -208,7 +208,7 @@ export default function Post() {
           </div>
         </div>
         {post.comments && post.comments.length > 0 && (
-          <div className="comments">
+          <div>
             {post.comments.map((comment, commentIndex) => (
               <div key={commentIndex}>
                 <CommentItem

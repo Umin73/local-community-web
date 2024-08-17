@@ -10,6 +10,7 @@ import Post from "./pages/post/Post";
 import Posts from "./pages/post/Posts";
 import Write from './pages/post/Write';
 import Edit from "./pages/post/Edit";
+import Search from "./pages/main/Search";
 
 function App(props) {
     return (
@@ -23,9 +24,10 @@ function App(props) {
                 <Route path="/myComment" element={<MyComment />} />
                 <Route path="/bookmark" element={<Bookmark />} />
                 <Route path="/post/:postId" element={<Post/>}/>
-                <Route path="/posts/:categoryId" element={<Posts/>}/>
+                <Route path="/posts" element={<Posts/>}/>
                 <Route path="/post/create" element={<Write/>}/>
                 <Route path="/post/:postId/edit" element={<Edit/>}/>
+                <Route path="/search" element={<Search/>}/>
             </Routes>
         </>
     );

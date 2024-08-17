@@ -48,7 +48,7 @@ public class PostService {
     private PostLikeService postLikeService;
     @Autowired
     private PostScrapService postScrapService;
-
+    @Transactional
     public PostResponse createPost(PostRequest postRequest, List<MultipartFile> imageFiles) throws IOException {
         // 아직 유저 연결 X -> 임시로 1L로 설정
         // User user = userRepository.findById(postRequest.getUserId()).orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
@@ -73,7 +73,7 @@ public class PostService {
         }
         return PostResponse.toDto(savedPost, false, false,null, imageResponses);
     }
-
+    @Transactional(readOnly = true)
     public PostResponse getPostById(Long postId, Long userId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("Invalid post ID"));
         Boolean isLiked = postLikeService.isLiked(userId, postId);
@@ -105,7 +105,7 @@ public class PostService {
     }
     @Transactional(readOnly = true)
     public Page<PostListResponse> searchPostsByCategoryId(Long categoryId, String keyword, Pageable pageable) {
-        Page<Post> posts = postRepository.findByCategoryIdAndTitleContainingOrContentContaining(categoryId, keyword, keyword, pageable);
+        Page<Post> posts = postRepository.findByCategoryIdAndKeyword(categoryId, keyword, pageable);
         return posts.map(PostListResponse::toDto);
     }
     @Transactional(readOnly = true)
@@ -113,7 +113,6 @@ public class PostService {
         Page<Post> posts = postRepository.findByTitleContainingOrContentContaining(keyword, keyword, pageable);
         return posts.map(PostListResponse::toDto);
     }
-
     @Transactional
     public Long update(Long postId, PostEditRequest postEditRequest, List<MultipartFile> imageFiles) throws Exception {
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("Invalid post ID"));

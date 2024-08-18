@@ -15,7 +15,6 @@ export default function Search() {
   const [totalPages, setTotalPages] = useState(0);
   const [postList, setPostList] = useState([]);
 
-
   const fetchPosts = async (page) => {
     try {
       const postListResponse = await axios.get(

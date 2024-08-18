@@ -1,10 +1,11 @@
 import React from "react";
 import "../../css/Posts.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useLocation } from "react-router-dom";
 import axios from "axios";
 
 export default function PostItem({ item }) {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleItemClick = () => {
     // 유저 아이디 임시 설정
@@ -22,6 +23,9 @@ export default function PostItem({ item }) {
   };
   return (
     <div className="posts__item" onClick={handleItemClick}>
+      {location.pathname === '/search' && (
+        <div className="posts__category">{item.category} 게시판</div>
+      )}
       <div className="posts__title">{item.title}</div>
       <div className="posts__content">{item.content}</div>
       <ul className="posts__status">

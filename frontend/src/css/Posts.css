@@ -53,11 +53,11 @@ h2 {
 }
 
 .posts__item {
-  min-width: 70vh; /* 최소 너비 설정 */
-  max-width: 70vh; /* 최소 너비 설정 */
+  min-width: 70vh; 
+  max-width: 70vh; 
   background: white;
   border: 1px solid #ced4da;
-  padding: 10px;
+  padding: 15px;
   cursor: pointer;
 }
 
@@ -65,18 +65,28 @@ h2 {
   border: 1px solid #ced4da;
 }
 
+.posts__item > * {
+  margin-bottom: 10px;
+}
+
+.posts__item > *:last-child {
+  margin-bottom: 0;
+}
+
+.posts__category {
+  color: green;
+  font-weight: bold;
+}
+
 .posts__title {
   font-size: 15px;
   font-family: Inter;
   font-weight: 1000;
   word-wrap: break-word;
-  padding-left: 10px;
   display: -webkit-box;
-  -webkit-line-clamp: 1; /* 한 줄까지 표시 */
+  -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  padding: 10px 10px 0px 10px;
-  margin-bottom: 10px;
 }
 
 .posts__content {
@@ -84,25 +94,23 @@ h2 {
   font-family: Inter;
   font-weight: 400;
   word-wrap: break-word;
-  padding-left: 10px;
   display: -webkit-box;
-  -webkit-line-clamp: 2; /* 두 줄까지 표시 */
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  margin-bottom: 10px;
 }
 
 .posts__status {
   display: flex;
-  justify-content: flex-end; /* 오른쪽 정렬 */
+  justify-content: flex-end;
+  gap: 15px;
 }
 
-.posts__status li{
+.posts__status li {
   color: grey;
   font-size: 14px;
   font-weight: 400;
-  padding-right: 15px;
-  display: flex; /* Flex 컨테이너로 설정 */
+  display: flex;
   align-items: center;
 }
 

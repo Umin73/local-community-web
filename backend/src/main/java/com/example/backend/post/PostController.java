@@ -1,5 +1,6 @@
 package com.example.backend.post;
 
+import com.example.backend.config.RedisDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,8 +32,6 @@ public class PostController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-    @Transactional
     @GetMapping("/post/{postId}")
     public ResponseEntity<PostResponse> getPostById(@PathVariable("postId") Long postId, @RequestParam("userId") Long userId) {
         PostResponse post = postService.getPostById(postId, userId);
@@ -44,7 +43,7 @@ public class PostController {
     }
     @GetMapping("/posts")
     public ResponseEntity<Page<PostListResponse>> getPostList(@RequestParam(value = "categoryId", required = false) Long categoryId, @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC)
-    Pageable pageable, @RequestParam(value = "keyword", required = false) String keyword) {
+    Pageable pageable, @RequestParam(value = "keyword", required = false) String keyword, @RequestParam(value = "best", required = false) String best) {
         Page<PostListResponse> postList = null;
         if (categoryId != null) { // category 안에서
             if (keyword == null) { // 키워드 검색 X
@@ -52,8 +51,13 @@ public class PostController {
             } else { // 키워드 검색 O
                 postList = postService.searchPostsByCategoryId(categoryId, keyword, pageable);
             }
-        } else { // 홈 화면에서 키워드 검색 {
-            postList = postService.searchPosts(keyword, pageable);
+        } else {
+            if (best.equals("조회")) {
+                postList = postService.getPostsByView(pageable);
+            } else {
+                // 홈 화면에서 키워드 검색
+                postList = postService.searchPosts(keyword, pageable);
+            }
         }
         return ResponseEntity.ok(postList);
     }
@@ -61,7 +65,6 @@ public class PostController {
     public Long editPostById(@PathVariable("postId") Long postId, @RequestPart(value = "postEditRequest") PostEditRequest postEditRequest, @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles) throws Exception {
         return postService.update(postId, postEditRequest, imageFiles);
     }
-
     @DeleteMapping("/post/{postId}/delete")
     public void deletePostById(@PathVariable("postId") Long postId) throws Exception {
         postService.delete(postId);

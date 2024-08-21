@@ -11,6 +11,7 @@ import Posts from "./pages/post/Posts";
 import Write from './pages/post/Write';
 import Edit from "./pages/post/Edit";
 import Search from "./pages/main/Search";
+import BestPosts from "./pages/main/BestPosts";
 
 function App(props) {
     return (
@@ -28,6 +29,7 @@ function App(props) {
                 <Route path="/post/create" element={<Write/>}/>
                 <Route path="/post/:postId/edit" element={<Edit/>}/>
                 <Route path="/search" element={<Search/>}/>
+                <Route path="/bestPosts" element={<BestPosts/>}/>
             </Routes>
         </>
     );

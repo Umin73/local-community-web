@@ -16,7 +16,7 @@ export default function Post() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const postResponse = await axios.get(`http://localhost:8080/post/${postId}`, { params: { userId: 1 } });
+        const postResponse = await axios.get(`http://localhost:8080/post/${postId}`, { params: { userId: 4 } });
         const postData = postResponse.data;
         setPost(postData);
         setCategoryId(postData.categoryId);
@@ -151,6 +151,7 @@ export default function Post() {
                   {post.isEdited ? "(수정됨)" : ""}
                 </div>
               </div>
+              <div>조회수: {post.view}</div>
             </div>
             <ul className="post__option">
               <li>
@@ -177,7 +178,6 @@ export default function Post() {
                 />
               ))}
           </div>
-
           <ul className="post__status">
             <li>
               <img

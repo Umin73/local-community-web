@@ -72,9 +72,13 @@ export default function Posts() {
           onChange={(event) => setSearchKeyword(event.target.value)}/>
         <button onClick={searchPosts}>검색</button>
       </div>
-      {postList.map((item, index) => (
-        <PostItem key={index} item={item} />
-      ))}
+      {postList.length > 0 && (
+        <div className="postItemContainer">
+          {postList.map((item, index) => (
+            <PostItem key={index} item={item} />
+          ))}
+        </div>
+      )}
       <div className="paginationAndButtonContainer">
         <div className="paginationContainer">
           <Pagination

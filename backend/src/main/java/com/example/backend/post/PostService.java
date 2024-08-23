@@ -5,6 +5,7 @@ import com.example.backend.category.CategoryRepository;
 import com.example.backend.comment.Comment;
 import com.example.backend.comment.CommentRepository;
 import com.example.backend.comment.CommentResponse;
+import com.example.backend.config.RedisDao;
 import com.example.backend.config.S3Service;
 import com.example.backend.post_image.PostImage;
 import com.example.backend.post_image.PostImageRepository;
@@ -24,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.net.URI;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,6 +50,9 @@ public class PostService {
     private PostLikeService postLikeService;
     @Autowired
     private PostScrapService postScrapService;
+    @Autowired
+    private RedisDao redisDao;
+
     @Transactional
     public PostResponse createPost(PostRequest postRequest, List<MultipartFile> imageFiles) throws IOException {
         // 아직 유저 연결 X -> 임시로 1L로 설정
@@ -94,6 +99,26 @@ public class PostService {
                     .collect(Collectors.toList());
             commentResponses.add(CommentResponse.toDto(comment, replyResponses));
         }
+
+        String redisKey = post.getId().toString();
+        String redisUserKey = userId.toString();
+        String values = redisDao.getValues(redisKey);
+        int views = 0;
+        if (values != null) {
+            views = Integer.parseInt(values);
+        } else {
+            values = "0";
+        }
+
+        // 유저를 key로 조회한 게시글 ID List안에 해당 게시글 ID가 포함되어 있지 않는다면,
+        if(!redisDao.getValuesList(redisUserKey).contains(redisKey)) {
+            redisDao.setValuesList(redisUserKey, redisKey); // 유저 key로 해당 글 ID를 List 형태로 저장
+            redisDao.setKeyExpiry(redisUserKey, Duration.ofMinutes(1));
+            views = Integer.parseInt(values) + 1;
+            redisDao.setValues(redisKey, String.valueOf(views));
+        }
+        post.setView(views);
+        System.out.println(views);
         return PostResponse.toDto(post, isScrapped, isLiked, commentResponses, imageResponses);
     }
 
@@ -111,6 +136,12 @@ public class PostService {
     @Transactional(readOnly = true)
     public Page<PostListResponse> searchPosts(String keyword, Pageable pageable) {
         Page<Post> posts = postRepository.findByTitleContainingOrContentContaining(keyword, keyword, pageable);
+        return posts.map(PostListResponse::toDto);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<PostListResponse> getPostsByView(Pageable pageable) {
+        Page<Post> posts = postRepository.findAllByOrderByViewDesc( pageable);
         return posts.map(PostListResponse::toDto);
     }
     @Transactional
@@ -157,6 +188,7 @@ public class PostService {
                 .collect(Collectors.toList());
 
         deleteS3Image(imageUrls);
+        redisDao.deleteValues(postId.toString());
         postRepository.delete(post);
     }
     @Transactional

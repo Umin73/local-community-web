@@ -52,17 +52,19 @@ h2 {
   cursor: pointer;
 }
 
+.postItemContainer {
+  border: 1px solid #ced4da;
+}
+
 .posts__item {
   min-width: 70vh; 
-  max-width: 70vh; 
-  background: white;
-  border: 1px solid #ced4da;
+  max-width: 70vh;
   padding: 15px;
   cursor: pointer;
 }
 
-.posts__item:last-child {
-  border: 1px solid #ced4da;
+.posts__item:not(:last-child) {
+  border-bottom: 1px solid #ced4da; /* 마지막 요소를 제외한 모든 요소에 border-bottom 적용 */
 }
 
 .posts__item > * {

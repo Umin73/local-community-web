@@ -6,6 +6,7 @@ import MyInfo from "./pages/my/MyInfo"
 import MyPost from "./pages/my/MyPost";
 import MyComment from "./pages/my/MyComment";
 import Bookmark from "./pages/my/Bookmark";
+import DeleteAcc from "./pages/my/DeleteAcc";
 import Post from "./pages/post/Post";
 import Posts from "./pages/post/Posts";
 import Write from './pages/post/Write';

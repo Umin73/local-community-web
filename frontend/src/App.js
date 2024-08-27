@@ -24,6 +24,7 @@ function App(props) {
                 <Route path="/myPost" element={<MyPost />} />
                 <Route path="/myComment" element={<MyComment />} />
                 <Route path="/bookmark" element={<Bookmark />} />
+                <Route path="/deleteacc" element={<DeleteAcc />}/>
                 <Route path="/post/:postId" element={<Post/>}/>
                 <Route path="/posts" element={<Posts/>}/>
                 <Route path="/post/create" element={<Write/>}/>

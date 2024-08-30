@@ -5,7 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RestController@RequestMapping("/users")public class UserController {
+@RestController
+@RequestMapping("/users")
+public class UserController {
     @Autowired
     private UserRepository userRepository;
 
@@ -27,13 +29,5 @@ import org.springframework.web.bind.annotation.*;
         }
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<User> getUser(@PathVariable Long id) {
-        User user = userRepository.findById(id).orElse(null);
-        if (user != null) {
-            return new ResponseEntity<>(user, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
+
 }

@@ -1,5 +1,6 @@
 package com.example.backend.post_scrap;
 
+import com.example.backend.user.User;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -12,4 +13,5 @@ public interface PostScrapRepository extends JpaRepository<PostScrap, Long> {
     Optional<PostScrap> findByUserIdAndPostId(Long userId, Long postId);
     @Transactional
     void deleteByUserIdAndPostId(Long userId, Long postId);
+    List<PostScrap> findByUser(User user);
 }

@@ -1,11 +1,12 @@
 package com.example.backend.user;
 
-import com.example.backend.mypage.entity.Mypage;
+import com.example.backend.comment_like.CommentLike;
 import com.example.backend.post_like.PostLike;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -19,7 +20,6 @@ import java.util.List;
 public class User {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "user_id")
     private String userId;
     private String password;
     private String username;
@@ -28,8 +28,10 @@ public class User {
     private String email;
     private String nickname;
 
-    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
-    private Mypage mypage;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostLike> postLikes = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CommentLike> CommentLikes = new ArrayList<>();
 
 }

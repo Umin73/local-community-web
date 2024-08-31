@@ -10,6 +10,7 @@ import com.example.backend.comment_like.CommentLikeRepository;
 import com.example.backend.post.Post;
 import com.example.backend.post.PostDto;
 import com.example.backend.post.PostRepository;
+import com.example.backend.post.PostResponse;
 import com.example.backend.post_like.PostLike;
 import com.example.backend.post_like.PostLikeDto;
 import com.example.backend.post_like.PostLikeRepository;
@@ -127,10 +128,13 @@ public class MyPageService { // 클래스 이름과 생성자 이름을 동일�
                         post.getContent(),
                         post.getCreatedDate(),
                         post.getModifiedDate(),
-                        post.getUser().getUsername()  // Simplified user information
+                        post.getUser().getUsername(),
+                        post.getComments().size()
                 ))
                 .collect(Collectors.toList());
     }
+
+
 
     //본인이 작성한 댓글 불러오기
     public List<CommentDto> getCommentsByUserId(Long userId)

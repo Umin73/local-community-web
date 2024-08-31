@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface CommentLikeRepository extends JpaRepository<CommentLike, Long> {
     List<CommentLike> findByCommentId(Long postId);
     Optional<CommentLike> findByUserIdAndCommentId(Long userId, Long commentId);
+
+    List<CommentLike> findByUserId(Long userId);
 }

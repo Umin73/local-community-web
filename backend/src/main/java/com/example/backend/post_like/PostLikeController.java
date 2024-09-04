@@ -11,11 +11,6 @@ public class PostLikeController {
     @Autowired
     private PostLikeService postLikeService;
 
-    @GetMapping("post/{postId}/likes")
-    public int getLikeCountByPostId(@PathVariable("postId") Long postId) {
-        return postLikeService.getLikeCountByPostId(postId);
-    }
-
     @PostMapping("/post/like")
     public void likePost(@RequestBody PostLikeRequest postLikeRequest) {
         postLikeService.likePost(postLikeRequest.getUserId(), postLikeRequest.getPostId());

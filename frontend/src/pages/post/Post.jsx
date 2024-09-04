@@ -16,7 +16,7 @@ export default function Post() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const postResponse = await axios.get(`http://localhost:8080/post/${postId}`, { params: { userId: 4 } });
+        const postResponse = await axios.get(`http://localhost:8080/post/${postId}`, { params: { userId: 1 } });
         const postData = postResponse.data;
         setPost(postData);
         setCategoryId(postData.categoryId);

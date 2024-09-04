@@ -31,8 +31,8 @@ public class PostListResponse {
                 post.getUser().getNickname(),
                 post.getContent(),
                 post.getCategory().getName(),
-                post.getPostLikes().size(),
-                post.getComments().size()
+                post.getLikeCount(),
+                post.getCommentCount()
         );
     }
 }

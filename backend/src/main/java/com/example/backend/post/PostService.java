@@ -113,12 +113,11 @@ public class PostService {
         // 유저를 key로 조회한 게시글 ID List안에 해당 게시글 ID가 포함되어 있지 않는다면,
         if(!redisDao.getValuesList(redisUserKey).contains(redisKey)) {
             redisDao.setValuesList(redisUserKey, redisKey); // 유저 key로 해당 글 ID를 List 형태로 저장
-            redisDao.setKeyExpiry(redisUserKey, Duration.ofMinutes(1));
+            redisDao.setKeyExpiry(redisUserKey, Duration.ofHours(24));
             views = Integer.parseInt(values) + 1;
             redisDao.setValues(redisKey, String.valueOf(views));
         }
         post.setView(views);
-        System.out.println(views);
         return PostResponse.toDto(post, isScrapped, isLiked, commentResponses, imageResponses);
     }
 

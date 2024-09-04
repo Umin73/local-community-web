@@ -7,6 +7,7 @@ import com.example.backend.user.User;
 import com.example.backend.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PostLikeService {
@@ -19,18 +20,14 @@ public class PostLikeService {
     @Autowired
     private UserRepository userRepository;
 
-    public int getLikeCountByPostId(Long postId) {
-        return postLikeRepository.findByPostId(postId).size();
-    }
-//    public List<PostLike> findByUserId(Long userId) {
-//        return postLikeRepository.findByUserId(userId);
-//    }
+    @Transactional
     public void likePost(Long userId, Long postId) {
         //임시 설정
         User user = userRepository.findById(1L).orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("Invalid post ID"));
         PostLike postLike = new PostLike(user, post);
         postLikeRepository.save(postLike);
+        post.increaseLikeCount();
     }
 
     public boolean isLiked(Long userId, Long postId) {

@@ -54,6 +54,10 @@ public class Post {
     private boolean isEdited = false;
     @Column(columnDefinition = "integer default 0", nullable = false)
     private int view;
+    @Column(name = "like_count", columnDefinition = "integer default 0")
+    private int likeCount;
+    @Column(name = "comment_count", columnDefinition = "integer default 0")
+    private int commentCount;
 
     public Post(String title, String content, User user, Category category) {
         this.title = title;
@@ -76,5 +80,14 @@ public class Post {
     public void removePostImage(PostImage postImage) {
         this.postImages.remove(postImage);
         postImage.setPost(null);
+    }
+    public void increaseLikeCount() {
+        this.likeCount += 1;
+    }
+    public void increaseCommentCount() {
+        this.commentCount += 1;
+    }
+    public void decreaseCommentCount() {
+        this.commentCount -= 1;
     }
 }

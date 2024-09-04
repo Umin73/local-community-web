@@ -42,6 +42,7 @@ public class CommentService {
             commentRepository.save(parentComment);
         }
         Comment savedComment = commentRepository.save(comment);
+        post.increaseCommentCount();
 
         // 자식 댓글 리스트를 DTO로 변환
         List<CommentResponse> children = savedComment.getChildrenComment().stream()
@@ -60,8 +61,8 @@ public class CommentService {
 
     @Transactional
     public void deleteComment(Long commentId) {
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid comment ID"));
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new IllegalArgumentException("Invalid comment ID"));
+        Post post = postRepository.findById(comment.getPost().getId()).orElseThrow(() -> new IllegalArgumentException("Invalid post ID"));
 
         // 자식 댓글이 있는 경우
         if (!comment.getChildrenComment().isEmpty()) {
@@ -80,5 +81,6 @@ public class CommentService {
                 commentRepository.delete(parentComment);
             }
         }
+        post.decreaseCommentCount();
     }
 }

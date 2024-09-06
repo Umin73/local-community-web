@@ -27,7 +27,7 @@ export default function CommentItem({ userToken, item, postId }) {
   const deleteComment = (commentId) => {
     if (window.confirm("이 댓글을 삭제하시겠습니까?")) {
       axios
-        .delete(`http://localhost:8080/comment/${commentId}/delete`)
+        .delete(`http://localhost:8080/comment/${commentId}`)
         .then((response) => {
           window.location.reload();
         })
@@ -50,7 +50,7 @@ export default function CommentItem({ userToken, item, postId }) {
 
   const editComment = (commentId) => {
     axios
-      .put(`http://localhost:8080/comment/${commentId}/edit`, {
+      .put(`http://localhost:8080/comment/${commentId}`, {
         content: editedContents[commentId],
         isEdited: true,
       })

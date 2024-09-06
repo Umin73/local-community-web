@@ -46,7 +46,7 @@ export default function Post() {
     if (window.confirm("이 글을 추천하시겠습니까?")) {
       axios
         .post("http://localhost:8080/post/like", {
-          userId: 2, // 로그인한 사용자 ID로 변경 필요
+          userId: 1, // 로그인한 사용자 ID로 변경 필요
           postId: postId,
         })
         .then(function (response) {
@@ -70,7 +70,7 @@ export default function Post() {
 
       axios
         .post(endpoint, {
-          userId: post.userId,
+          userId: 1, // 로그인한 사용자 ID로 변경 필요
           postId: postId,
         })
         .then(function (response) {
@@ -87,7 +87,7 @@ export default function Post() {
     event.preventDefault();
     axios
       .post("http://localhost:8080/comment/create", {
-        userId: post.userId,
+        userId: 1, // 로그인한 사용자 ID로 변경 필요
         postId: postId,
         content: commentInput,
       })
@@ -117,14 +117,9 @@ export default function Post() {
     e.preventDefault();
     if (window.confirm("이 글을 삭제하시겠습니까?")) {
       axios
-        .delete(`http://localhost:8080/post/${postId}/delete`)
+        .delete(`http://localhost:8080/post/${postId}`)
         .then((response) => {
-          if (response.status >= 200 && response.status < 300) {
-            console.log("글 삭제 성공");
-            navigate("/posts");
-          } else {
-            console.error("글 삭제 실패");
-          }
+            navigate(`/posts`, { state: { categoryId: categoryId, category: category } });
         })
         .catch((err) => {
           console.log("error : ", err);

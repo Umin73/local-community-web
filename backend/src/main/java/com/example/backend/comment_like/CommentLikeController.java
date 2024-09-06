@@ -14,14 +14,13 @@ public class CommentLikeController {
     public boolean getLikeCountByPostId(@PathVariable("commentId") Long commentId, @RequestParam("userId") Long userId) {
         return commentLikeService.isLiked(userId, commentId);
     }
-
     @GetMapping("/comment/{commentId}/likes")
     public int getLikeCountByPostId(@PathVariable("commentId") Long commentId) {
         return commentLikeService.getLikeCountByCommentId(commentId).size();
     }
-
     @PostMapping("/comment/like")
-    public void likeComment(@RequestBody CommentLikeRequest commentLikeRequest) {
+    public ResponseEntity<String> likeComment(@RequestBody CommentLikeRequest commentLikeRequest) {
         commentLikeService.likeComment(commentLikeRequest.getUserId(), commentLikeRequest.getCommentId());
+        return ResponseEntity.ok("댓글 좋아요 성공");
     }
 }

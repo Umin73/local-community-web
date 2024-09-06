@@ -12,7 +12,8 @@ public class PostLikeController {
     private PostLikeService postLikeService;
 
     @PostMapping("/post/like")
-    public void likePost(@RequestBody PostLikeRequest postLikeRequest) {
+    public ResponseEntity<String> likePost(@RequestBody PostLikeRequest postLikeRequest) {
         postLikeService.likePost(postLikeRequest.getUserId(), postLikeRequest.getPostId());
+        return ResponseEntity.ok("게시글 좋아요 성공");
     }
 }

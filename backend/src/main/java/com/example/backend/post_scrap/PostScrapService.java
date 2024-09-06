@@ -24,31 +24,16 @@ public class PostScrapService {
     public int getScrapCountByPostId(Long postId) {
         return postScrapRepository.findByPostId(postId).size();
     }
-
-
     @Transactional
-    public PostScrap scrapPost(Long userId, Long postId) {
-        Optional<PostScrap> existingScrap = postScrapRepository.findByUserIdAndPostId(userId, postId);
-
-        if (existingScrap.isPresent()) {
-            throw new IllegalStateException("Already scrapped.");
-        } else {
-            User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
-            Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("Invalid post ID"));
-            PostScrap newScrap = new PostScrap(user, post);
-            return postScrapRepository.save(newScrap);
-        }
+    public void  scrapPost(Long userId, Long postId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("Invalid post ID"));
+        PostScrap newScrap = new PostScrap(user, post);
+        postScrapRepository.save(newScrap);
     }
-
     @Transactional
     public void unscrapPost(Long userId, Long postId) {
-        Optional<PostScrap> existingScrap = postScrapRepository.findByUserIdAndPostId(userId, postId);
-
-        if (existingScrap.isPresent()) {
-            postScrapRepository.deleteByUserIdAndPostId(userId, postId);
-        } else {
-            throw new IllegalStateException("No scrap found to remove.");
-        }
+        postScrapRepository.deleteByUserIdAndPostId(userId, postId);
     }
     public boolean isScrapped(Long userId, Long postId) {
         return postScrapRepository.findByUserIdAndPostId(userId, postId).isPresent();

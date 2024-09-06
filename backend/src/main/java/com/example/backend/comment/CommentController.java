@@ -19,13 +19,13 @@ public class CommentController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
-    @PutMapping("/comment/{commentId}/edit")
+    @PutMapping("/comment/{commentId}")
     public Long editComment(@PathVariable("commentId") Long commentId, @RequestBody CommentEditRequest editRequest) {
         return commentService.editComment(commentId, editRequest);
     }
-
-    @DeleteMapping("/comment/{commentId}/delete")
-    public void deleteComment(@PathVariable("commentId") Long commentId) {
+    @DeleteMapping("/comment/{commentId}")
+    public ResponseEntity<String> deleteComment(@PathVariable("commentId") Long commentId) {
         commentService.deleteComment(commentId);
+        return ResponseEntity.ok("댓글 삭제 성공");
     }
 }

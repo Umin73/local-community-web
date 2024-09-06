@@ -58,7 +58,7 @@ public class PostController {
         return ResponseEntity.ok(postList);
     }
     @GetMapping("/posts/best")
-    public ResponseEntity<List<PostListResponse>> getPostList(@RequestParam(value = "name", required = false) String name) {
+    public ResponseEntity<List<PostListResponse>> getPostList(@RequestParam(value = "name") String name) {
         List<PostListResponse> postList = null;
         if (name.equals("조회")) {
             postList = postService.getPostsByView();
@@ -69,12 +69,13 @@ public class PostController {
         }
         return ResponseEntity.ok(postList);
     }
-    @PutMapping("/post/{postId}/edit")
+    @PutMapping("/post/{postId}")
     public Long editPostById(@PathVariable("postId") Long postId, @RequestPart(value = "postEditRequest") PostEditRequest postEditRequest, @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles) throws Exception {
         return postService.update(postId, postEditRequest, imageFiles);
     }
-    @DeleteMapping("/post/{postId}/delete")
-    public void deletePostById(@PathVariable("postId") Long postId) throws Exception {
+    @DeleteMapping("/post/{postId}")
+    public ResponseEntity<String> deletePostById(@PathVariable("postId") Long postId) throws Exception {
         postService.delete(postId);
+        return ResponseEntity.ok("게시글 삭제 성공");
     }
 }

@@ -17,6 +17,7 @@ import com.example.backend.user.User;
 import com.example.backend.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.Pageable;
@@ -139,10 +140,17 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public Page<PostListResponse> getPostsByView(Pageable pageable) {
-        Page<Post> posts = postRepository.findAllByOrderByViewDesc( pageable);
-        return posts.map(PostListResponse::toDto);
+    public List<PostListResponse> getPostsByView() {
+        List<Post> posts = postRepository.findTop20ByViewGreaterThanOrderByViewDesc(1);
+        return posts.stream().map(PostListResponse::toDto).collect(Collectors.toList());
     }
+
+    @Transactional(readOnly = true)
+    public List<PostListResponse> getPostsByLikeCount() {
+        List<Post> posts = postRepository.findTop20ByLikeCountGreaterThanOrderByLikeCountDesc(0);
+        return posts.stream().map(PostListResponse::toDto).collect(Collectors.toList());
+    }
+
     @Transactional
     public Long update(Long postId, PostEditRequest postEditRequest, List<MultipartFile> imageFiles) throws Exception {
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("Invalid post ID"));

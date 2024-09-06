@@ -2,48 +2,33 @@ import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import PostItem from "../../components/post/PostItem";
 import "../../css/Posts.css";
-import Pagination from "react-js-pagination";
 import axios from "axios";
 
 export default function BestPosts() {
   const location = useLocation();
-  const query = new URLSearchParams(location.search);
-  const initialPage = parseInt(query.get("page")) || 0;
-  const [currentPage, setCurrentPage] = useState(initialPage);
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
   const [category, setCategory] = useState(location.state.category || null);
   const [postList, setPostList] = useState([]);
 
-  console.log("오잉?");
-  const fetchPosts = async (page) => {
+  const fetchPosts = async () => {
     try {
       const postListResponse = await axios.get(
-        `http://localhost:8080/posts`,
+        `http://localhost:8080/posts/best`,
         {
           params: {
-            page: page - 1,
-            size: 5,
-            best: category
+            name: category
           }
         }
       );
-      console.log(postListResponse.data.conten);
-      setPostList(postListResponse.data.content);
-      setTotalPages(postListResponse.data.totalPages);
-      setCurrentPage(page);
+      setPostList(postListResponse.data);
     } catch (err) {
       console.log("error : ", err);
     }
   };
 
-  const handlePageChange = (pageNumber) => {
-    fetchPosts(pageNumber);
-  };
-
   useEffect(() => {
-    fetchPosts(currentPage);
-  }, [currentPage]);
+    fetchPosts();
+  }, [category]);
+
 
   return (
     <div className="root">
@@ -56,17 +41,6 @@ export default function BestPosts() {
             ))}
           </div>
         )}
-        <div className="paginationAndButtonContainer">
-          <div className="paginationContainer">
-            <Pagination
-              activePage={currentPage}
-              itemsCountPerPage={5}
-              totalItemsCount={totalPages * 5}
-              pageRangeDisplayed={5}
-              onChange={handlePageChange}
-            />
-          </div>
-        </div>
       </div>
     </div>
   );

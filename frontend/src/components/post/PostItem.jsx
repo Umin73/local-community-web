@@ -7,7 +7,7 @@ export default function PostItem({ item }) {
   const location = useLocation();
 
   const handleItemClick = () => {
-      navigate(`/post/${item.postId}`);
+    navigate(`/post/${item.postId}`);
   }
   return (
     <div className="posts__item" onClick={handleItemClick}>

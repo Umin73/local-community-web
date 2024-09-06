@@ -16,7 +16,7 @@ export default function Post() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const postResponse = await axios.get(`http://localhost:8080/post/${postId}`, { params: { userId: 1 } });
+        const postResponse = await axios.get(`http://localhost:8080/post/${postId}`, { params: { userId: 2 } });
         const postData = postResponse.data;
         setPost(postData);
         setCategoryId(postData.categoryId);
@@ -46,7 +46,7 @@ export default function Post() {
     if (window.confirm("이 글을 추천하시겠습니까?")) {
       axios
         .post("http://localhost:8080/post/like", {
-          userId: 1, // 로그인한 사용자 ID로 변경 필요
+          userId: 2, // 로그인한 사용자 ID로 변경 필요
           postId: postId,
         })
         .then(function (response) {

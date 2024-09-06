@@ -43,7 +43,7 @@ public class PostController {
     }
     @GetMapping("/posts")
     public ResponseEntity<Page<PostListResponse>> getPostList(@RequestParam(value = "categoryId", required = false) Long categoryId, @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC)
-    Pageable pageable, @RequestParam(value = "keyword", required = false) String keyword, @RequestParam(value = "best", required = false) String best) {
+    Pageable pageable, @RequestParam(value = "keyword", required = false) String keyword) {
         Page<PostListResponse> postList = null;
         if (categoryId != null) { // category 안에서
             if (keyword == null) { // 키워드 검색 X
@@ -52,12 +52,18 @@ public class PostController {
                 postList = postService.searchPostsByCategoryId(categoryId, keyword, pageable);
             }
         } else {
-            if (best.equals("조회")) {
-                postList = postService.getPostsByView(pageable);
-            } else {
-                // 홈 화면에서 키워드 검색
-                postList = postService.searchPosts(keyword, pageable);
-            }
+            // 홈 화면에서 키워드 검색
+            postList = postService.searchPosts(keyword, pageable);
+        }
+        return ResponseEntity.ok(postList);
+    }
+    @GetMapping("/posts/best")
+    public ResponseEntity<List<PostListResponse>> getPostList(@RequestParam(value = "name", required = false) String name) {
+        List<PostListResponse> postList = null;
+        if (name.equals("조회")) {
+            postList = postService.getPostsByView();
+        } else if (name.equals("추천")) {
+            postList = postService.getPostsByLikeCount();
         }
         return ResponseEntity.ok(postList);
     }

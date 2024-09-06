@@ -17,9 +17,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Post> findByCategoryId(Long categoryId, Pageable pageable);
     Page<Post> findByCategoryIdAndTitleContainingOrContentContaining(Long categoryId, String keywordTitle, String keywordContent, Pageable pageable);
     List<Post> findByUser(User user);
-  
- @Query("SELECT p FROM Post p WHERE p.category.id = :categoryId AND (p.title LIKE %:keyword% OR p.content LIKE %:keyword%)")
+    @Query("SELECT p FROM Post p WHERE p.category.id = :categoryId AND (p.title LIKE %:keyword% OR p.content LIKE %:keyword%)")
     Page<Post> findByCategoryIdAndKeyword(@Param("categoryId") Long categoryId, @Param("keyword") String keyword, Pageable pageable);
-    Page<Post> findAllByOrderByViewDesc(Pageable pageable);
-
+    List<Post> findTop20ByViewGreaterThanOrderByViewDesc(int view);
+    List<Post> findTop20ByLikeCountGreaterThanOrderByLikeCountDesc(int likeCount);
 }

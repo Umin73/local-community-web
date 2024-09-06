@@ -64,6 +64,8 @@ public class PostController {
             postList = postService.getPostsByView();
         } else if (name.equals("추천")) {
             postList = postService.getPostsByLikeCount();
+        } else if (name.equals("댓글")) {
+            postList = postService.getPostsByCommentCount();
         }
         return ResponseEntity.ok(postList);
     }

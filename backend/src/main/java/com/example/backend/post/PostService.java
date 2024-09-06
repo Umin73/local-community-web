@@ -138,19 +138,21 @@ public class PostService {
         Page<Post> posts = postRepository.findByTitleContainingOrContentContaining(keyword, keyword, pageable);
         return posts.map(PostListResponse::toDto);
     }
-
     @Transactional(readOnly = true)
     public List<PostListResponse> getPostsByView() {
         List<Post> posts = postRepository.findTop20ByViewGreaterThanOrderByViewDesc(1);
         return posts.stream().map(PostListResponse::toDto).collect(Collectors.toList());
     }
-
     @Transactional(readOnly = true)
     public List<PostListResponse> getPostsByLikeCount() {
         List<Post> posts = postRepository.findTop20ByLikeCountGreaterThanOrderByLikeCountDesc(0);
         return posts.stream().map(PostListResponse::toDto).collect(Collectors.toList());
     }
-
+    @Transactional(readOnly = true)
+    public List<PostListResponse> getPostsByCommentCount() {
+        List<Post> posts = postRepository.findTop20ByCommentCountGreaterThanOrderByCommentCountDesc(0);
+        return posts.stream().map(PostListResponse::toDto).collect(Collectors.toList());
+    }
     @Transactional
     public Long update(Long postId, PostEditRequest postEditRequest, List<MultipartFile> imageFiles) throws Exception {
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("Invalid post ID"));

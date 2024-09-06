@@ -21,4 +21,5 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Post> findByCategoryIdAndKeyword(@Param("categoryId") Long categoryId, @Param("keyword") String keyword, Pageable pageable);
     List<Post> findTop20ByViewGreaterThanOrderByViewDesc(int view);
     List<Post> findTop20ByLikeCountGreaterThanOrderByLikeCountDesc(int likeCount);
+    List<Post> findTop20ByCommentCountGreaterThanOrderByCommentCountDesc(int commentCount);
 }

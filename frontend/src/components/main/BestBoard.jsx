@@ -56,7 +56,7 @@ function BestBoard(props) {
                         <table border="1" className="table1">
                             <tbody>
                                 <tr>
-                                    <td height="40px" className="tabletitle">best 댓글수 게시글</td>
+                                    <td height="40px" className="tabletitle" onClick={() => handleClick("댓글")}>best 댓글 수 게시글</td>
                                 </tr>
                                 <tr>
                                     <td>피치: 구리에서 편의시설 가장 많은 동네 어딘가요?···</td>

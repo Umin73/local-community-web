@@ -7,7 +7,6 @@ on:
   push:
     branches:
       - dev
-      - feat/deploy/#30
 
 # Workflow Job(병렬 수행)
 jobs:

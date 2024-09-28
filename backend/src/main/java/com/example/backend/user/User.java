@@ -27,6 +27,7 @@ public class User {
     private String phone;
     private String email;
     private String nickname;
+    private String kakaoUser;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostLike> postLikes = new ArrayList<>();

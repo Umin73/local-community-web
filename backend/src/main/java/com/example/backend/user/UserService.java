@@ -26,15 +26,19 @@ public class UserService {
     }
 
     public boolean checkuserIdDuplicate(String userId) {
-        return userRepository.existsByuserId(userId);
+        return userRepository.existsByUserId(userId);
     }
 
     public boolean checkKakaoUserExists(String kakaoUserId) {
-        return userRepository.existsByuserId(kakaoUserId);
+        return userRepository.existsByUserId(kakaoUserId);
     }
 
-    public boolean checkUserPhoneExists(String phone) {
-        return userRepository.existsByPhone(phone);
+    public boolean checkUserEmailExists(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    public boolean checkUserIdExists(String userId) {
+        return userRepository.existsByUserId(userId);
     }
 
     public void join(JoinRequest req) {

@@ -3,12 +3,17 @@ import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import "../../css/FindId.css";
 
-export default function FindId() {
+export default function FindPw() {
+    const [id, setId] = useState("");
     const [email, setEmail] = useState("");
     const [authNum, setAuthNum] = useState("");
 
     const [validationState, setValidationState] = useState(false);
     const [message, setMessage] = useState("");
+
+    const handleId = (e) => {
+        setId(e.target.value);
+    };
 
     const handleEmail = (e) => {
         setEmail(e.target.value);
@@ -16,11 +21,29 @@ export default function FindId() {
 
     const handleAuthNum = (e) => {
         setAuthNum(e.target.value);
-    }
+    };
 
     const onAlert = (message) => {
         alert(message);
     };
+
+    const handleCheckId = async () => {
+        try {
+            const response = await axios.get("/jwt-login/exist-id", {
+                params: {id: id}
+            });
+
+            const {success, message} = response.data;
+
+            setValidationState(success);
+            setMessage(message);
+            onAlert(message);
+        } catch (error) {
+            console.error("아이디 확인 요청 실패: ", error);
+            setMessage("서버와 통신 오류");
+            console.log(message);
+        }
+    }
 
     const handleCheckEmail = async () => {
         try{
@@ -55,41 +78,27 @@ export default function FindId() {
     return(
         <div className="page">
             <div className="noticeWrap">
-                <p className="noticeTitle">아이디 찾기</p>
-                <p className="notice">계정에 등록된 이메일을 인증하시면</p>
-                <p className="notice">사용 중인 계정의 아이디를 알려드립니다.</p>
+                <p className="noticeTitle">비밀번호 찾기</p>
+                <p className="notice">아이디를 입력하시면 계정에 등록된 이메일로</p>
+                <p className="notice">비밀번호를 재설정 링크를 보내드립니다.</p>
             </div>
 
             <div className="contentWrap">
-                <p className="findId_smallMsg">이메일</p>
+                <p className="findId_smallMsg">아이디</p>
                 <div className="findId_inputAndBtnWrap">
                     <div className="findId_inputWrap">
                         <input
                             type="text"
                             className="input"
-                            placeholder="sample@google.com"
-                            value={email}
-                            onChange={handleEmail}
+                            placeholder="아이디 입력"
+                            value={id}
+                            onChange={handleId}
                         />
                     </div>
-                    <button className="findId_btn" onClick={handleCheckEmail}>인증 요청</button>
-                </div>
-                &nbsp;
-
-                <p className="findId_smallMsg">인증번호</p>
-                <div className="findId_inputAndBtnWrap">
-                    <div className="findId_inputWrap">
-                        <input
-                            type="text"
-                            className="input"
-                            placeholder="인증번호 입력"
-                            value={authNum}
-                            onChange={handleAuthNum}
-                        />
-                    </div>
-                    <button className="findId_btn">인증</button>
+                    <button className="findId_btn" onClick={handleCheckId}>확인</button>
                 </div>
             </div>
+
         </div>
     )
 }

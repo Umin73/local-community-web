@@ -20,6 +20,10 @@ export default function Login() {
         navigate('/jwt-login/find-id');
     };
 
+    const handleFindPwClick = () => {
+        navigate('/jwt-login/find-pw');
+    }
+
     const handleId = (e) => {
         setId(e.target.value);
     };
@@ -113,7 +117,7 @@ export default function Login() {
                 </div>
                 &nbsp;&nbsp;
                 <div className="findWrap">
-                    <button className="findButton">비밀번호 찾기&nbsp;&nbsp;|</button>
+                    <button className="findButton" onClick={handleFindPwClick}>비밀번호 찾기&nbsp;&nbsp;|</button>
                 </div>
                 &nbsp;&nbsp;
                 <div className="signupWrap">

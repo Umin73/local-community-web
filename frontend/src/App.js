@@ -1,5 +1,6 @@
 import {Route, Routes} from "react-router-dom";
 import MainPage from "./pages/main/MainPage";
+import FindPw from "./pages/user/FindPw"
 import FindId from "./pages/user/FindId";
 import Login from "./pages/user/Login";
 import SignUp from "./pages/user/SignUp";
@@ -20,6 +21,7 @@ function App(props) {
         <>
             <Routes>
                 <Route path="/" element={<MainPage />} />
+                <Route path="/jwt-login/find-pw" element={<FindPw/>} />
                 <Route path="/jwt-login/find-id" element={<FindId/>} />
                 <Route path="/jwt-login/login" element={<Login/>}/>
                 <Route path="/jwt-login/join" element={<SignUp/>}/>

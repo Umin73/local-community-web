@@ -1,8 +1,9 @@
 package com.example.backend.user.findId;
 
+import com.example.backend.mail.MailController;
+import com.example.backend.mail.MailService;
 import com.example.backend.user.UserService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -10,23 +11,38 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/jwt-login")
+@RequiredArgsConstructor
 public class FindIdController {
     private final UserService userService;
+    private final MailController mailController;
+    private final FindIdService findIdService;
 
-    public FindIdController(UserService userService) {
-        this.userService = userService;
-    }
-
-    @GetMapping("/check-phone")
-    public Map<String, Object> checkPhoneNumber(@RequestParam(name = "phone") String phone) {
+    @GetMapping("/exist-email")
+    public Map<String, Object> checkEmail(@RequestParam(name = "email") String email) {
         Map<String, Object> response = new HashMap<>();
 
-        if(userService.checkUserPhoneExists(phone)) {
+        if(userService.checkUserEmailExists(email)) {
             response.put("success", true);
-            response.put("message", "인증번호가 카카오톡으로 전송되었습니다.");
+            response.put("message", "인증번호가 이메일로 전송되었습니다.");
+
         } else {
             response.put("success", false);
-            response.put("message", "존재하지 않는 휴대폰 번호입니다.");
+            response.put("message", "등록되지 않은 이메일입니다.");
+        }
+
+        return response;
+    }
+
+    @GetMapping("/exist-id")
+    public Map<String, Object> checkId(@RequestParam(name = "id") String id) {
+        Map<String, Object> response = new HashMap<>();
+
+        if(userService.checkUserIdExists(id)) {
+            response.put("success", true);
+            response.put("message", "비밀번호 변경 링크가 계정에 등록된 이메일로 전송되었습니다.");
+        } else {
+            response.put("success", false);
+            response.put("message", "등록되지 않은 아이디입니다.");
         }
 
         return response;

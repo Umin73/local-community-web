@@ -24,7 +24,8 @@ public class PostResponse {
     private int commentCount;
     private int scrapCount;
     @JsonProperty("isEdited")
-    private boolean isEdited;
+//    private boolean isEdited;
+    private Boolean isEdited;
     @JsonProperty("isScrapped")
     private boolean isScrapped;
     @JsonProperty("isLiked")
@@ -67,7 +68,8 @@ public class PostResponse {
                 post.getLikeCount(),
                 post.getCommentCount(),
                 post.getPostScraps().size(),
-                post.isEdited(),
+//                post.isEdited(),
+                post.getIsEdited(),
                 isScrapped,
                 isLiked,
                 post.getCreatedDate(),

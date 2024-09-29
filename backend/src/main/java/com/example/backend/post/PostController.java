@@ -1,6 +1,7 @@
 package com.example.backend.post;
 
 import com.example.backend.config.RedisDao;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,10 +21,27 @@ public class PostController {
     @Autowired
     private PostService postService;
 
+//    @PostMapping("/post/create")
+//    public ResponseEntity<PostResponse> createPost(@RequestPart(value = "postRequest") PostRequest postRequest,
+//                                           @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles) {
+//        try {
+//            PostResponse createdPost = postService.createPost(postRequest, imageFiles);
+//            return new ResponseEntity<>(createdPost, HttpStatus.CREATED);
+//        } catch (IllegalArgumentException e) {
+//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//        } catch (IOException e) {
+//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
+
     @PostMapping("/post/create")
-    public ResponseEntity<PostResponse> createPost(@RequestPart(value = "postRequest") PostRequest postRequest,
-                                           @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles) {
+    public ResponseEntity<PostResponse> createPost(@RequestPart(value = "postRequest") String postRequestString,
+                                                   @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles) {
         try {
+            // JSON 문자열을 객체로 변환
+            ObjectMapper objectMapper = new ObjectMapper();
+            PostRequest postRequest = objectMapper.readValue(postRequestString, PostRequest.class);
+
             PostResponse createdPost = postService.createPost(postRequest, imageFiles);
             return new ResponseEntity<>(createdPost, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
@@ -32,6 +50,8 @@ public class PostController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
     @GetMapping("/post/{postId}")
     public ResponseEntity<PostResponse> getPostById(@PathVariable("postId") Long postId, @RequestParam("userId") Long userId) {
         PostResponse post = postService.getPostById(postId, userId);

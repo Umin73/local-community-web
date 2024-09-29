@@ -1,6 +1,7 @@
 package com.example.backend.mypage.service;
 
 
+import com.example.backend.comment.Comment;
 import com.example.backend.comment.CommentDto;
 import com.example.backend.comment.CommentRepository;
 import com.example.backend.comment_like.CommentLike;
@@ -148,6 +149,30 @@ public class MyPageService { // 클래스 이름과 생성자 이름을 동일�
                         comment.getContent(),
                         comment.getCreatedDate(),
                         comment.getUser().getUsername()
+                ))
+                .collect(Collectors.toList());
+    }
+
+    //본인이 작성한 댓글이 적힌 글 불러오기
+    public List<PostDto> getCommentedPostsByUserId(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
+
+        // 사용자가 작성한 모든 댓글을 가져옴
+        List<Comment> comments = commentRepository.findByUser(user);
+
+        // 댓글이 달린 게시글을 추출하고 중복 제거
+        return comments.stream()
+                .map(comment -> comment.getPost())
+                .distinct() // 중복된 게시글 제거
+                .map(post -> new PostDto(
+                        post.getId(),
+                        post.getTitle(),
+                        post.getContent(),
+                        post.getCreatedDate(),
+                        post.getModifiedDate(),
+                        post.getUser().getUsername(),
+                        post.getComments().size()
                 ))
                 .collect(Collectors.toList());
     }

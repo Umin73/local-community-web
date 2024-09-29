@@ -48,6 +48,13 @@ public class MyPageController {
         return myPageService.getCommentsByUserId(userId);
     }
 
+    @GetMapping("/{userId}/commented-posts")
+    public List<PostDto> getCommentedPosts(@PathVariable("userId") Long userId) {
+        return myPageService.getCommentedPostsByUserId(userId);
+    }
+
+
+
     @GetMapping("/scraps")
     public List<PostScrapDto> getScrappedPostsByUserId(@RequestParam("id") Long userId) {
         return myPageService.getScrappedPostsByUserId(userId);
@@ -57,5 +64,7 @@ public class MyPageController {
     public UserDto updateUser(@PathVariable("userId")  Long id, @RequestBody UserDto userDto) {
         return myPageService.updateUser(id, userDto);
     }
+
+
 
 }

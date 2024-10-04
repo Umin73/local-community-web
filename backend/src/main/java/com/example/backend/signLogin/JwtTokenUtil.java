@@ -19,7 +19,10 @@ public class JwtTokenUtil {
     // JWT Token 발급
     public static String createToken(String userId, long expireTimeMs) {
         Claims claims = Jwts.claims();
-        claims.put("userId", userId);
+        claims.put("userId", userId);  // 사용자 ID를 클레임에 포함
+
+        // 로그 추가 - 각 사용자에 맞게 userId가 다르게 출력되는지 확인
+        System.out.println("Creating JWT Token for userId: " + userId);
 
         return Jwts.builder()
                 .setClaims(claims)

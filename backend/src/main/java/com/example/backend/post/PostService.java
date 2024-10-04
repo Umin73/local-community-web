@@ -57,7 +57,7 @@ public class PostService {
     public PostResponse createPost(PostRequest postRequest, List<MultipartFile> imageFiles) throws IOException {
         // 아직 유저 연결 X -> 임시로 1L로 설정
         // User user = userRepository.findById(postRequest.getUserId()).orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
-        User user = userRepository.findById(1L).orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
+        User user = userRepository.findById(postRequest.getUserId()).orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
         Category category = categoryRepository.findById(postRequest.getCategoryId()).orElseThrow(() -> new IllegalArgumentException("Invalid category ID"));
         Post post = new Post(postRequest.getTitle(), postRequest.getContent(), user, category);
         Post savedPost = postRepository.save(post);

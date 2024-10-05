@@ -51,19 +51,15 @@ public class PostController {
                                                    @RequestPart(value = "postRequest") String postRequestString,
                                                    @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles) {
         try {
-            //jwtToken으로부터 로그인아이디의 의미인 UserId를 뽑아내기
-            String loginId = getUserIdFromCookie(request);
+            //jwtToken으로부터 id(PK)를 뽑아내기
+            Long id = getUserIdFromCookie(request);
 
-            // 로그인아이디의 의미인 UserId를 가지고 UserTable의 id를 찾아내기
-            User user = userRepository.findByUserId(loginId)
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid login ID: " + loginId));
-
-            // 이건 postman에서 작동하도록 추가한 코드입닏.
+            // 이건 postman에서 작동하도록 추가한 코드입니다.
             ObjectMapper objectMapper = new ObjectMapper();
             PostRequest postRequest = objectMapper.readValue(postRequestString, PostRequest.class);
 
             // Set the userTableId in the post request
-            postRequest.setUserId(user.getId()); // This sets the userTableId (e.g., 8)
+            postRequest.setUserId(id); // This sets the userTableId (e.g., 8)
 
             // all the PostService to create the post
             PostResponse createdPost = postService.createPost(postRequest, imageFiles);
@@ -80,8 +76,9 @@ public class PostController {
 
 
     @GetMapping("/post/{postId}")
-    public ResponseEntity<PostResponse> getPostById(@PathVariable("postId") Long postId, @RequestParam("userId") Long userId) {
-        PostResponse post = postService.getPostById(postId, userId);
+    public ResponseEntity<PostResponse> getPostById(HttpServletRequest request, @PathVariable("postId") Long postId) {
+        Long id = getUserIdFromCookie(request);
+        PostResponse post = postService.getPostById(postId, id);
         if (post != null) {
             return new ResponseEntity<>(post, HttpStatus.OK);
         } else {
@@ -117,21 +114,24 @@ public class PostController {
         return ResponseEntity.ok(postList);
     }
     @PutMapping("/post/{postId}")
-    public Long editPostById(@PathVariable("postId") Long postId, @RequestPart(value = "postEditRequest") PostEditRequest postEditRequest, @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles) throws Exception {
+    public Long editPostById(@PathVariable("postId") Long postId, @RequestPart(value = "postEditRequest") String postEditRequestString, @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles) throws Exception {
+        // 이건 postman에서 작동하도록 추가한 코드입니다.
+        ObjectMapper objectMapper = new ObjectMapper();
+        PostEditRequest postEditRequest = objectMapper.readValue(postEditRequestString, PostEditRequest.class);
         return postService.update(postId, postEditRequest, imageFiles);
     }
-    @DeleteMapping("/post/{postId}")
+    @DeleteMapping(value="/post/{postId}", produces="application/json; charset=utf-8")
     public ResponseEntity<String> deletePostById(@PathVariable("postId") Long postId) throws Exception {
         postService.delete(postId);
         return ResponseEntity.ok("게시글 삭제 성공");
     }
 
     // JWT 토큰을 통해 userId를 쿠키에서 추출하는 메서드
-    private String getUserIdFromCookie(HttpServletRequest request) {
+    private Long getUserIdFromCookie(HttpServletRequest request) {
         Optional<Cookie> jwtCookie = getJwtTokenFromCookies(request.getCookies());
         if (jwtCookie.isPresent()) {
             String token = jwtCookie.get().getValue();
-            return JwtTokenUtil.getuserId(token); // JWT 토큰에서 loginId 추출 (e.g., "user777")
+            return JwtTokenUtil.getId(token); // JWT 토큰에서 loginId 추출 (e.g., "user777")
         } else {
             throw new IllegalArgumentException("JWT 토큰이 없습니다.");
         }

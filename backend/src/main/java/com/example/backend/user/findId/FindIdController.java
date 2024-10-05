@@ -1,7 +1,6 @@
 package com.example.backend.user.findId;
 
 import com.example.backend.mail.MailController;
-import com.example.backend.mail.MailService;
 import com.example.backend.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +32,22 @@ public class FindIdController {
         return response;
     }
 
+    @GetMapping("/find-id")
+    public Map<String, Object> findId(@RequestParam(name = "email") String email) {
+        Map<String, Object> response = new HashMap<>();
+
+        try{
+            String userId = userService.findUserIdByEmail(email);
+            response.put("success", true);
+            response.put("userId", userId);
+        } catch (RuntimeException e) {
+            response.put("success", false);
+            response.put("message", e.getMessage());
+        }
+
+        return response;
+    }
+
     @GetMapping("/exist-id")
     public Map<String, Object> checkId(@RequestParam(name = "id") String id) {
         Map<String, Object> response = new HashMap<>();
@@ -43,6 +58,23 @@ public class FindIdController {
         } else {
             response.put("success", false);
             response.put("message", "등록되지 않은 아이디입니다.");
+        }
+
+        return response;
+    }
+
+    @PostMapping("/get-email")
+    public Map<String, Object> getEmail(@RequestBody Map<String, String> requestData) {
+        Map<String, Object> response = new HashMap<>();
+        String id = requestData.get("id");
+
+        try {
+            String email = userService.findEmailByUserId(id);
+            response.put("success", true);
+            response.put("email", email);
+        } catch (RuntimeException e) {
+            response.put("success", false);
+            response.put("message", e.getMessage());
         }
 
         return response;

@@ -38,6 +38,30 @@ export default function FindPw() {
             setValidationState(success);
             setMessage(message);
             onAlert(message);
+
+            try {
+                const response2 = await axios.post("/jwt-login/get-email", {
+                    id: id
+                });
+
+                const {success, email} = response2.data;
+                setEmail(email);
+
+                if(success) {
+                    try {
+                        const sendResponse = await axios.post("/jwt-login/email-send", {
+                            email: email,
+                            type: "findPw"
+                        });
+                        console.log("이메일 전송 요청 성공: ", sendResponse);
+                    } catch (error) {
+                        console.error("이메일 전송 요청 실패: ", error);
+                    }
+                }
+            } catch (error2) {
+                console.log("이메일 가져오기 요청 실패: ", error2);
+            }
+
         } catch (error) {
             console.error("아이디 확인 요청 실패: ", error);
             setMessage("서버와 통신 오류");
@@ -59,8 +83,9 @@ export default function FindPw() {
 
             if(success) {
                 try {
-                    const sendResponse = await axios.post("/jwt-login/email/send", {
-                        email: email
+                    const sendResponse = await axios.post("/jwt-login/email-send", {
+                        email: email,
+                        type: "findPw"
                     });
                     console.log("이메일 전송 요청 성공: ", sendResponse);
                 } catch (error) {

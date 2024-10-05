@@ -1,68 +1,46 @@
 package com.example.backend.mail;
 
+import com.example.backend.config.RedisService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-@Slf4j
+import java.util.Objects;
+
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class MailService {
 
-    private final JavaMailSender mailSender;
+    private final JavaMailSender javaMailSender;
+    private final RedisService redisService;
 
-    public void sendMail(String toEmail, String title, String content) {
-        SimpleMailMessage emailForm = createEmailForm(toEmail, title, content);
+    private static String senderEmail = "comtownddwu@naver.com";
+    private static int number;
+    private static String pwLink = "~~~";
 
-        System.out.println("emailForm.getFrom() = " + emailForm.getFrom());
-        System.out.println("emailForm.getSubject() = " + emailForm.getSubject());
-        System.out.println("emailForm.getText() = " + emailForm.getText());
-        System.out.println("emailForm.getTo() = " + emailForm.getTo());
-        
+    public static void createNumber() {
+        number = (int)(Math.random()*90000) + 100000;
+    }
+
+    public MimeMessage createFindIdMail(String mail) {
+
+        createNumber();
+
+        MimeMessage message = javaMailSender.createMimeMessage();
+
         try{
-            mailSender.send(emailForm);
-            System.out.println("메일 보내기 성공");
-        } catch (RuntimeException e) {
-            log.error("MailService.sendMail 예외 발생: " + e.getMessage());
-            System.out.println("메일 보내기 실패");
-        }
-    }
-
-    private SimpleMailMessage createEmailForm(String toEmail, String title, String content) {
-
-        SimpleMailMessage message = new SimpleMailMessage();
-        System.out.println("toEmail = " + toEmail);
-        message.setTo(toEmail);
-        message.setSubject(title);
-        message.setText(content);
-        message.setFrom("ddwucomtown@gmail.com");
-
-        return message;
-    }
-
-    /*private final JavaMailSender mailSender;
-    private static final String senderEmail = "ddwucomtown@gmail.com";
-    private static int authNum;
-
-    MimeMessage createMail(String mail) {
-        MimeMessage message = mailSender.createMimeMessage();
-
-        try {
             message.setFrom(senderEmail);
             message.setRecipients(MimeMessage.RecipientType.TO, mail);
             message.setSubject("[TOWN-IN] 이메일 인증");
 
-            String emailContent = "";
-            emailContent += "<h3>" + "요청하신 인증 번호입니다." + "</h3>";
-            emailContent += "<h1>" + authNum + "</h1>";
+            String body = "";
+            body += "<h3>" + "요청하신 인증 번호입니다." + "</h3>";
+            body += "<h1>" + number + "</h1>";
+            body += "<h3>" + "감사합니다." + "</h3>";
 
-            message.setText(emailContent, "UTF-8", "html");
+            message.setText(body,"UTF-8", "html");
 
         } catch (MessagingException e) {
             e.printStackTrace();
@@ -71,15 +49,50 @@ public class MailService {
         return message;
     }
 
-    // 랜덤 인증번호 생성
-    static void createAuthNum() {
-        authNum = (int) ((Math.random() * (90000)) + 100000);
+    public MimeMessage createFindPwMail(String mail) {
+        MimeMessage message = javaMailSender.createMimeMessage();
+
+        try{
+            message.setFrom(senderEmail);
+            message.setRecipients(MimeMessage.RecipientType.TO, mail);
+            message.setSubject("[TOWN-IN] 비밀번호 재설정 링크");
+
+            String body = "";
+            body += "<h3>" + "요청하신 비밀번호 재설정 링크입니다." + "</h3>";
+            body += "<h1>" + pwLink + "</h1>";
+            body += "<h3>" + "감사합니다." + "</h3>";
+
+            message.setText(body,"UTF-8", "html");
+
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+
+        return message;
     }
 
-    int sendMail(String mail) {
-        MimeMessage message = createMail(mail);
-        mailSender.send(message);
+    public int sendMail(MailDto mailDto) {
+        String mail = mailDto.getEmail().trim();
+        MimeMessage message = switch (mailDto.getType()) {
+            case "findId" -> createFindIdMail(mail);
+            case "findPw" -> createFindPwMail(mail);
+            default ->
+                    throw new IllegalArgumentException("유효하지 않은 메일 타입입니다: " + mailDto.getType());
+        };
 
-        return authNum;
-    }*/
+        javaMailSender.send(message);
+        redisService.save(mail, String.valueOf(number));
+        return number;
+    }
+
+    public boolean verifyCode(ApproveRequestDto approveRequestDto) {
+        String storedCode = redisService.get(approveRequestDto.getEmail());
+
+        if(storedCode != null && storedCode.equals(approveRequestDto.getCode())) {
+            redisService.delete(approveRequestDto.getEmail());
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

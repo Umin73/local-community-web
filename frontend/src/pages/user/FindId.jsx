@@ -6,6 +6,7 @@ import "../../css/FindId.css";
 export default function FindId() {
     const [email, setEmail] = useState("");
     const [authNum, setAuthNum] = useState("");
+    const [findId, setFindId] = useState("");
 
     const [validationState, setValidationState] = useState(false);
     const [message, setMessage] = useState("");
@@ -36,8 +37,9 @@ export default function FindId() {
 
             if(success) {
                 try {
-                    const sendResponse = await axios.post("/jwt-login/email/send", {
-                        email: email
+                    const sendResponse = await axios.post("/jwt-login/email-send", {
+                        email: email,
+                        type: "findId"
                     });
                     console.log("이메일 전송 요청 성공: ", sendResponse);
                 } catch (error) {
@@ -49,6 +51,42 @@ export default function FindId() {
             console.error("이메일 확인 요청 실패: ", error);
             setMessage("서버와 통신 오류");
             console.log(message);
+        }
+    }
+
+    const handleVerifyCode = async () => {
+        try {
+            const response = await axios.post("/jwt-login/verify-code", {
+                email: email,
+                code: authNum
+            });
+
+            const {success, message} = response.data;
+
+            setMessage(message);
+            onAlert(message);
+
+            console.log("인증 번호 확인 요청 성공: ", response)
+
+            if(success) {
+                try {
+                    const response2 = await axios.get("/jwt-login/find-id", {
+                        params: {email: email}
+                    });
+                    console.log("아이디 가져오기 요청 성공");
+
+                    const {success, userId} = response2.data;
+                    setFindId(userId);
+
+                } catch (error) {
+                    console.error("아이디 가져오기 요청 실패: ", error);
+                }
+            }
+
+        } catch(error) {
+            console.error("인증 번호 확인 요청 실패: ", error);
+            setMessage("서버와 통신 오류");
+            onAlert(message);
         }
     }
 
@@ -87,9 +125,15 @@ export default function FindId() {
                             onChange={handleAuthNum}
                         />
                     </div>
-                    <button className="findId_btn">인증</button>
+                    <button className="findId_btn" onClick={handleVerifyCode}>인증</button>
                 </div>
             </div>
+
+            {findId && (
+                <div className="findId_smallMsg">
+                    <p className="notice">인증하신 이메일로 등록된 아이디는 <b>{findId}</b> 입니다.</p>
+                </div>
+            )}
         </div>
     )
 }

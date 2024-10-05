@@ -25,6 +25,16 @@ public class UserService {
         return userRepository.findById(id).orElse(null);
     }
 
+    public String findUserIdByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("해당 이메일로 등록된 유저가 없습니다."));
+        return user.getUserId();
+    }
+
+    public String findEmailByUserId(String userId) {
+        return userRepository.findByUserId(userId).getEmail();
+    }
+
     public boolean checkuserIdDuplicate(String userId) {
         return userRepository.existsByUserId(userId);
     }

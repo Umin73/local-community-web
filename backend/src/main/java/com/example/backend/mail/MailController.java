@@ -1,28 +1,36 @@
 package com.example.backend.mail;
 
-import com.example.backend.user.findId.FindIdService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/jwt-login")
 @RequiredArgsConstructor
 public class MailController {
 
-    private final FindIdService findIdService;
+    private final MailService mailService;
 
-    @PostMapping("/email/send")
-    public ResponseEntity sendMessage(@RequestBody Map<String, String> requestData) {
+    @PostMapping("/jwt-login/email-send")
+    public void MailSend(@RequestBody MailDto mailDto) {
+        mailService.sendMail(mailDto);
+    }
 
-        String email = requestData.get("email");
-        findIdService.sendCodeToEmail(email);
+    @PostMapping("/jwt-login/verify-code")
+    public Map<String, Object> verifyCode(@RequestBody ApproveRequestDto approveRequestDto) {
+        Map<String, Object> response = new HashMap<>();
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        if(mailService.verifyCode(approveRequestDto)) {
+            response.put("success", true);
+            response.put("message", "인증되었습니다.");
+        } else {
+            response.put("success", false);
+            response.put("message", "인증에 실패하였습니다.");
+        }
+
+        return response;
     }
 }

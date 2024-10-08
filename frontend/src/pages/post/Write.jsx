@@ -15,7 +15,6 @@ export default function Write() {
   const [files, setFiles] = useState([]);
   const fileInputRef = useRef(null);
 
-  
   useEffect(() => {
     setCategory(location.state.category);
     setCategoryId(location.state.categoryId);

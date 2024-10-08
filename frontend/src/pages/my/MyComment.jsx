@@ -8,20 +8,20 @@ import axios from 'axios';
 export default function MyComment() {
     const [commentedPosts, setCommentedPosts] = useState([]);
 
-    // 컴포넌트가 마운트될 때 데이터를 가져옴
+    // Fetch posts the user has commented on when the component mounts
     useEffect(() => {
         const fetchCommentedPosts = async () => {
             try {
-                const response = await axios.get('/mypage/commented-posts', {
-                    withCredentials: true // 쿠키를 포함하여 서버로 요청
+                const response = await axios.get('/mypage/comments', {
+                    withCredentials: true // Include cookies (JWT) in the request
                 });
-                setCommentedPosts(response.data);
+                setCommentedPosts(response.data); // Store the commented posts data
             } catch (error) {
                 console.error('Failed to fetch commented posts:', error);
             }
         };
 
-        fetchCommentedPosts();
+        fetchCommentedPosts(); // Fetch the commented posts when the component mounts
     }, []);
 
     return (
@@ -57,7 +57,7 @@ export default function MyComment() {
     );
 }
 
-// 스타일 컴포넌트 정의
+// Styled-components for styling the MyComment component
 const MyCommentWrapper = styled.div`
     margin-left: 400px;
     margin-right: 50px;
@@ -92,7 +92,6 @@ const Table = styled.table`
     }
 `;
 
-
 // import React, { useState, useEffect } from 'react';
 // import styled from 'styled-components';
 // import '../../css/MyPage.css';
@@ -103,19 +102,21 @@ const Table = styled.table`
 // export default function MyComment() {
 //     const [commentedPosts, setCommentedPosts] = useState([]);
 //
-//     // 사용자 ID (이 부분은 로그인 정보에서 가져오는 것이 더 적합합니다.)
-//     const userId = 1;
-//
 //     // 컴포넌트가 마운트될 때 데이터를 가져옴
 //     useEffect(() => {
-//         axios.get(`/mypage/${userId}/commented-posts`)
-//             .then(response => {
+//         const fetchCommentedPosts = async () => {
+//             try {
+//                 const response = await axios.get('/mypage/commented-posts', {
+//                     withCredentials: true // 쿠키를 포함하여 서버로 요청
+//                 });
 //                 setCommentedPosts(response.data);
-//             })
-//             .catch(error => {
+//             } catch (error) {
 //                 console.error('Failed to fetch commented posts:', error);
-//             });
-//     }, [userId]);
+//             }
+//         };
+//
+//         fetchCommentedPosts();
+//     }, []);
 //
 //     return (
 //         <>
@@ -184,5 +185,5 @@ const Table = styled.table`
 //         padding: 12px;
 //     }
 // `;
-//
-//
+
+

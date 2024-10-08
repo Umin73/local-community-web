@@ -22,8 +22,7 @@ public class PostLikeService {
 
     @Transactional
     public void likePost(Long userId, Long postId) {
-        //임시 설정
-        User user = userRepository.findById(1L).orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("Invalid post ID"));
         PostLike postLike = new PostLike(user, post);
         postLikeRepository.save(postLike);

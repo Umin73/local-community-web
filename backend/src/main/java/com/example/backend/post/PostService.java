@@ -17,6 +17,7 @@ import com.example.backend.user.User;
 import com.example.backend.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.Pageable;
@@ -55,8 +56,6 @@ public class PostService {
 
     @Transactional
     public PostResponse createPost(PostRequest postRequest, List<MultipartFile> imageFiles) throws IOException {
-        // 아직 유저 연결 X -> 임시로 1L로 설정
-        // User user = userRepository.findById(postRequest.getUserId()).orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
         User user = userRepository.findById(postRequest.getUserId()).orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
         Category category = categoryRepository.findById(postRequest.getCategoryId()).orElseThrow(() -> new IllegalArgumentException("Invalid category ID"));
         Post post = new Post(postRequest.getTitle(), postRequest.getContent(), user, category);
@@ -76,13 +75,13 @@ public class PostService {
                 }
             }
         }
-        return PostResponse.toDto(savedPost, false, false,null, imageResponses);
+        return PostResponse.toDto(savedPost, false, false,null, imageResponses, null);
     }
     @Transactional(readOnly = true)
-    public PostResponse getPostById(Long postId, Long userId) {
+    public PostResponse getPostById(Long postId, Long loginId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("Invalid post ID"));
-        Boolean isLiked = postLikeService.isLiked(userId, postId);
-        Boolean isScrapped = postScrapService.isScrapped(userId, postId);
+        Boolean isLiked = postLikeService.isLiked(loginId, postId);
+        Boolean isScrapped = postScrapService.isScrapped(loginId, postId);
 
         List<PostImage> postImages = postImageRepository.findByPostId(postId);
         List<PostImageResponse> imageResponses = postImages.stream()
@@ -95,13 +94,13 @@ public class PostService {
         for (Comment comment : postComments) {
             List<Comment> replies = commentRepository.findByParentCommentId(comment.getId());
             List<CommentResponse> replyResponses = replies.stream()
-                    .map(reply -> CommentResponse.toDto(reply, null))
+                    .map(reply -> CommentResponse.toDto(reply, null, loginId))
                     .collect(Collectors.toList());
-            commentResponses.add(CommentResponse.toDto(comment, replyResponses));
+            commentResponses.add(CommentResponse.toDto(comment, replyResponses, loginId));
         }
 
         String redisKey = post.getId().toString();
-        String redisUserKey = userId.toString();
+        String redisUserKey = loginId.toString();
         String values = redisDao.getValues(redisKey);
         int views = 0;
         if (values != null) {
@@ -118,7 +117,7 @@ public class PostService {
             redisDao.setValues(redisKey, String.valueOf(views));
         }
         post.setView(views);
-        return PostResponse.toDto(post, isScrapped, isLiked, commentResponses, imageResponses);
+        return PostResponse.toDto(post, isScrapped, isLiked, commentResponses, imageResponses, loginId);
     }
 
     @Transactional(readOnly = true)
@@ -137,11 +136,20 @@ public class PostService {
         Page<Post> posts = postRepository.findByTitleContainingOrContentContaining(keyword, keyword, pageable);
         return posts.map(PostListResponse::toDto);
     }
-
     @Transactional(readOnly = true)
-    public Page<PostListResponse> getPostsByView(Pageable pageable) {
-        Page<Post> posts = postRepository.findAllByOrderByViewDesc( pageable);
-        return posts.map(PostListResponse::toDto);
+    public List<PostListResponse> getPostsByView() {
+        List<Post> posts = postRepository.findTop20ByViewGreaterThanOrderByViewDesc(1);
+        return posts.stream().map(PostListResponse::toDto).collect(Collectors.toList());
+    }
+    @Transactional(readOnly = true)
+    public List<PostListResponse> getPostsByLikeCount() {
+        List<Post> posts = postRepository.findTop20ByLikeCountGreaterThanOrderByLikeCountDesc(0);
+        return posts.stream().map(PostListResponse::toDto).collect(Collectors.toList());
+    }
+    @Transactional(readOnly = true)
+    public List<PostListResponse> getPostsByCommentCount() {
+        List<Post> posts = postRepository.findTop20ByCommentCountGreaterThanOrderByCommentCountDesc(0);
+        return posts.stream().map(PostListResponse::toDto).collect(Collectors.toList());
     }
     @Transactional
     public Long update(Long postId, PostEditRequest postEditRequest, List<MultipartFile> imageFiles) throws Exception {

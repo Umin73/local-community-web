@@ -27,6 +27,9 @@ export default function Login() {
                 setError("");
                 // 로그인 성공 후 JWT 토큰을 localStorage에 저장
                 localStorage.setItem('jwtToken', response.data.jwtToken);
+
+                console.log(response.data.jwtToken);
+                console.log(localStorage.getItem('jwtToken'));
                 // 로그인 성공 후 페이지 이동
                 // window.location.href = "/myinfo";
             }

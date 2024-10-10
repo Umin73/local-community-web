@@ -1,6 +1,7 @@
 import React from "react";
 import '../../css/Main.css';
 import styled from "styled-components";
+import { Link } from 'react-router-dom';
 
 const Wrapper = styled.div`
     height: 750px;

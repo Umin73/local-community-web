@@ -14,6 +14,7 @@ export default function MyPost() {
   const [address, setAddress] = useState("");
   const [email, setEmail] = useState("");
   const [userInfo, setUserInfo] = useState({});
+  const [profileImg, setProfileImg] = useState("");
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -26,6 +27,7 @@ export default function MyPost() {
         setPhoneNum(response.data.phone);
         setAddress(response.data.address);
         setEmail(response.data.email);
+        setProfileImg(response.data.profile_url);
       } catch (error) {
         console.error("Failed to fetch user info:", error);
       }
@@ -33,6 +35,16 @@ export default function MyPost() {
 
     fetchUserInfo();
   }, []);
+
+  const saveImgFile = (e) => {
+    const {files} = e.target;
+    const uploadFile = files[0];
+    const reader = new FileReader();
+    reader.readAsDataURL(uploadFile);
+    reader.onloadend = ()=> {
+      setProfileImg(reader.result);
+    }
+  };
 
   const canChangePwd = async (e) => {
     e.preventDefault();
@@ -66,6 +78,7 @@ export default function MyPost() {
               address,
               email,
               password,
+              profile_url: profileImg,
             },
             {
               withCredentials: true, // 쿠키를 포함하여 서버로 요청을 보냄
@@ -97,28 +110,9 @@ export default function MyPost() {
                 <tr>
                   <td className="info-item">프로필 사진</td>
                   <td>
-                    {/* 프로필 사진을 보여주는 img 태그 */}
-                    <img
-                        src={
-                            userInfo.profile_url ||
-                            "https://image11.coupangcdn.com/image/cmg/oms/banner/e587245b-b580-48da-84b6-ac5f6aa392fb_980x670.jpg"
-                        }
-                        alt="프로필 사진"
-                        style={{
-                          width: "100px",
-                          height: "100px",
-                          borderRadius: "50%",
-                        }}
-                    />
-                    {/* 사용자가 파일을 선택할 수 있는 input */}
-                    <input
-                        type="file"
-                        id="newProfilePic"
-                        style={{ fontSize: "11px", marginLeft: "10px" }}
-                    />
-                    <button style={{ fontSize: "11px", padding: "5px" }}>
-                      삭제
-                    </button>
+                    <Profile src={profileImg}/><br/>
+                    <input type="file" id="profileImg" onChange={saveImgFile} style={{fontSize: '11px'}}/>
+                    <button style={{fontSize: '11px', padding: '5px'}}>삭제</button>
                   </td>
                 </tr>
                 <tr>
@@ -239,6 +233,13 @@ const NicknameCheck = styled.button`
   margin-left: 5px;
   font-size: 11px;
   padding: 5px;
+`;
+
+const Profile = styled.img`
+  margin: 20px;
+  width: 200px;
+  height: 200px;
+    border-radius: 30%;    
 `;
 
 // import React, { useState, useEffect } from "react";

@@ -3,6 +3,7 @@ import com.example.backend.signLogin.JoinRequest;
 import com.example.backend.signLogin.LoginRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -90,5 +91,16 @@ public class UserService {
         if (userId == null) return null;
         Optional<User> optionalUser = userRepository.findByuserId(userId);
         return optionalUser.orElse(null);
+    }
+
+    public void updatePassword(String email, String newPassword){
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
+
+        String encodedPassword = encoder.encode(newPassword);
+
+        user.setPassword(encodedPassword);
+
+        userRepository.save(user);
     }
 }

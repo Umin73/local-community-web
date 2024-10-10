@@ -37,9 +37,8 @@ export default function FindId() {
 
             if(success) {
                 try {
-                    const sendResponse = await axios.post("/jwt-login/email-send", {
-                        email: email,
-                        type: "findId"
+                    const sendResponse = await axios.post("/jwt-login/id-email", {
+                        email: email
                     });
                     console.log("이메일 전송 요청 성공: ", sendResponse);
                 } catch (error) {

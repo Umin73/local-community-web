@@ -49,9 +49,8 @@ export default function FindPw() {
 
                 if(success) {
                     try {
-                        const sendResponse = await axios.post("/jwt-login/email-send", {
-                            email: email,
-                            type: "findPw"
+                        const sendResponse = await axios.post("/jwt-login/pw-email", {
+                            email: email
                         });
                         console.log("이메일 전송 요청 성공: ", sendResponse);
                     } catch (error) {
@@ -83,9 +82,8 @@ export default function FindPw() {
 
             if(success) {
                 try {
-                    const sendResponse = await axios.post("/jwt-login/email-send", {
-                        email: email,
-                        type: "findPw"
+                    const sendResponse = await axios.post("/jwt-login/pw-email", {
+                        email: email
                     });
                     console.log("이메일 전송 요청 성공: ", sendResponse);
                 } catch (error) {

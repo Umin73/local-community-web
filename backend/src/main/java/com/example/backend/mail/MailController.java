@@ -1,6 +1,7 @@
 package com.example.backend.mail;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,9 +15,15 @@ public class MailController {
 
     private final MailService mailService;
 
-    @PostMapping("/jwt-login/email-send")
-    public void MailSend(@RequestBody MailDto mailDto) {
-        mailService.sendMail(mailDto);
+    @PostMapping("/jwt-login/id-email")
+    public void IdMailSend(@RequestBody MailDto mailDto) {
+        mailService.sendFindIdMail(mailDto);
+    }
+
+    @PostMapping("/jwt-login/pw-email")
+    public void PwMailSend(@RequestBody MailDto mailDto) {
+        String token = mailService.generatePwResetToken(mailDto.getEmail());
+        mailService.sendPwResetMail(mailDto, token);
     }
 
     @PostMapping("/jwt-login/verify-code")
@@ -33,4 +40,6 @@ public class MailController {
 
         return response;
     }
+
+
 }

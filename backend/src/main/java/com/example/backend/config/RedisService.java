@@ -17,6 +17,7 @@ public class RedisService {
     }
 
     public String get(String email) {
+        System.out.println("이메일은!! " + email);
         Object result = redisTemplate.opsForValue().get(email);
 
         if(result == null) {

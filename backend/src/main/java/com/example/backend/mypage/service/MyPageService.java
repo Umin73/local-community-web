@@ -59,6 +59,7 @@ public class MyPageService {
         user.setPhone(userDto.getPhone());
         user.setEmail(userDto.getEmail());
         user.setNickname(userDto.getNickname());
+        user.setProfile_url(userDto.getProfile_url());
 
         userRepository.save(user);
         return convertToDto(user);
@@ -72,6 +73,7 @@ public class MyPageService {
         userDto.setPhone(user.getPhone());
         userDto.setEmail(user.getEmail());
         userDto.setNickname(user.getNickname());
+        userDto.setProfile_url(user.getProfile_url());
         return userDto;
     }
 

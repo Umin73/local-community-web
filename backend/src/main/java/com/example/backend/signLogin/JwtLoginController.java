@@ -12,6 +12,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/jwt-login")
@@ -35,21 +38,59 @@ public class JwtLoginController {
     @PostMapping("/join")
     public String join(@Valid @RequestBody JoinRequest joinRequest, BindingResult bindingResult) {
         // userId 중복 체크
-        if(userService.checkuserIdDuplicate(joinRequest.getUserId())) {
-            bindingResult.addError(new FieldError("joinRequest", "userId", "로그인 아이디가 중복됩니다."));
+        if(!isKakaoLogin(joinRequest) && userService.checkuserIdDuplicate(joinRequest.getUserId())) {
+            bindingResult.addError(new FieldError("joinRequest", "userId", "로그인 아이디가 중복됩니다.")); // 여기선 빼도 될것같은데??
         }
 
         // password와 passwordCheck가 같은지 체크
-        if(!joinRequest.getPassword().equals(joinRequest.getPasswordCheck())) {
+        if(!isKakaoLogin(joinRequest) && !joinRequest.getPassword().equals(joinRequest.getPasswordCheck())) {
             bindingResult.addError(new FieldError("joinRequest", "passwordCheck", "비밀번호가 일치하지 않습니다."));
         }
 
-        if(bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors()) {
+            System.out.println("회원가입 실패. 에러 목록:");
+            bindingResult.getAllErrors().forEach(error -> {
+                System.out.println(error.toString());
+            });
             return "회원가입 실패";
         }
 
         userService.join2(joinRequest);
         return "회원가입 성공";
+    }
+
+    private boolean isKakaoLogin(JoinRequest joinRequest) {
+        return joinRequest.getKakaoUser() != null && !joinRequest.getKakaoUser().isEmpty();
+    }
+
+    @GetMapping("/check-id")
+    public Map<String, Object> checkId(@RequestParam(name = "userId") String userId) {
+        Map<String, Object> response = new HashMap<>();
+
+        if(userService.checkuserIdDuplicate(userId)) {
+            response.put("success", false);
+            response.put("message", "이미 존재하는 아이디입니다.");
+        } else {
+            response.put("success", true);
+            response.put("message", "사용 가능한 아이디입니다.");
+        }
+
+        return response;
+    }
+
+    @GetMapping("/check-kakaouser")
+    public Map<String, Object> checkKakaoUser(@RequestParam(name = "kakaoUser") String kakaoUser) {
+        Map<String, Object> response = new HashMap<>();
+
+        if(userService.checkKakaoUserExists(kakaoUser)) {
+            response.put("success", true);
+            response.put("message", "존재하지 않는 회원입니다.");
+        } else {
+            response.put("success", false);
+            response.put("message", "로그인 성공");
+        }
+
+        return response;
     }
 
     @GetMapping("/login")

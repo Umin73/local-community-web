@@ -5,6 +5,7 @@ import com.example.backend.signLogin.LoginRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -44,7 +45,8 @@ public class UserService {
     }
 
     public String findEmailByUserId(String userId) {
-        return userRepository.findByUserId(userId).getEmail();
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> new RuntimeException("해당 이름의 유저가 없습니다."));
+        return user.getEmail();
     }
 
     // 유저 ID 중복 체크

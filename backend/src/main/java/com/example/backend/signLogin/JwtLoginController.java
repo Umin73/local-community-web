@@ -98,32 +98,7 @@ public class JwtLoginController {
         return "Jwt Token 화면 로그인";
     }
 
-//    @PostMapping("/login")
-//    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest, BindingResult bindingResult,
-//                                        HttpServletResponse response) {
-//
-//        User user = userService.login(loginRequest);
-//
-//        if (user == null) {
-//            bindingResult.reject("loginFail", "로그인 아이디 또는 비밀번호가 틀렸습니다.");
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-//                    .header("Content-Type", "text/plain; charset=UTF-8")
-//                    .body("로그인 실패");
-//        }
-//
-//        long expireTimeMs = 1000 * 60 * 60; // Token 유효 시간 = 60분
-//        String jwtToken = JwtTokenUtil.createToken(user.getUserId(), expireTimeMs);
-//
-//        Cookie cookie = new Cookie("jwtToken", jwtToken);
-//        cookie.setHttpOnly(true);
-//        cookie.setMaxAge((int) (expireTimeMs / 1000));
-//        cookie.setPath("/");
-//        response.addCookie(cookie);
-//
-//        return ResponseEntity.ok()
-//                .header("Content-Type", "text/plain; charset=UTF-8")
-//                .body("로그인 성공");
-//    }
+
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
         User user = userService.login(loginRequest);

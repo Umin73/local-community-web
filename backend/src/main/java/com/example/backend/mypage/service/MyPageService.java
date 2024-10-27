@@ -6,6 +6,7 @@ import com.example.backend.comment.CommentRepository;
 import com.example.backend.comment_like.CommentLike;
 import com.example.backend.comment_like.CommentLikeDto;
 import com.example.backend.comment_like.CommentLikeRepository;
+import com.example.backend.config.S3Service;
 import com.example.backend.post.Post;
 import com.example.backend.post.PostDto;
 import com.example.backend.post.PostRepository;
@@ -18,9 +19,13 @@ import com.example.backend.post_scrap.PostScrapRepository;
 import com.example.backend.user.User;
 import com.example.backend.user.UserDto;
 import com.example.backend.user.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,13 +38,19 @@ public class MyPageService {
     private final CommentRepository commentRepository;
     private final PostScrapRepository postScrapRepository;
 
-    public MyPageService(PostLikeRepository postLikeRepository, CommentLikeRepository commentLikeRepository, UserRepository userRepository, PostRepository postRepository, CommentRepository commentRepository, PostScrapRepository postScrapRepository) {
+    private final S3Service s3Service;
+
+    @Value("${default.profile.image.url}")
+    private String defaultProfileImageUrl;
+
+    public MyPageService(PostLikeRepository postLikeRepository, CommentLikeRepository commentLikeRepository, UserRepository userRepository, PostRepository postRepository, CommentRepository commentRepository, PostScrapRepository postScrapRepository, S3Service s3Service) {
         this.postLikeRepository = postLikeRepository;
         this.commentLikeRepository = commentLikeRepository;
         this.userRepository = userRepository;
         this.postRepository = postRepository;
         this.commentRepository = commentRepository;
         this.postScrapRepository = postScrapRepository;
+        this.s3Service = s3Service;
     }
 
     //User 정보 불러오기
@@ -63,6 +74,40 @@ public class MyPageService {
 
         userRepository.save(user);
         return convertToDto(user);
+    }
+
+    // 프로필 이미지 업데이트
+    public String updateProfileImage(String userId, MultipartFile profileImage) {
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with userId: " + userId));
+
+        try {
+
+            String existingProfileUrl = user.getProfile_url();
+
+            // 기존 프로필 이미지가 기본 이미지가 아니면 삭제
+            if (existingProfileUrl != null && !existingProfileUrl.equals(defaultProfileImageUrl)) {
+                try {
+                    // 기존 URL에서 전체 파일 경로를 추출하여 S3에서 삭제
+                    String existingFilePath = existingProfileUrl.substring(existingProfileUrl.indexOf("mypage/"));
+                    s3Service.deleteFile(existingFilePath);
+                } catch (Exception e) {
+                    System.err.println("Failed to delete previous profile image from S3: " + e.getMessage());
+                }
+            }
+
+            // 사용자 ID를 포함한 고정된 이미지 파일 이름 생성
+            String newFileName = "mypage/" + UUID.randomUUID();
+            String imageUrl = s3Service.upload(profileImage, newFileName);
+
+            // 새로운 이미지 URL로 업데이트
+            user.setProfile_url(imageUrl);
+            userRepository.save(user);
+            return imageUrl;
+
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to upload profile image", e);
+        }
     }
 
     private UserDto convertToDto(User user) {

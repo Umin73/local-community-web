@@ -10,7 +10,10 @@ import com.example.backend.signLogin.JwtTokenUtil;
 import com.example.backend.user.UserDto;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -77,5 +80,12 @@ public class MyPageController {
     public UserDto updateUser(HttpServletRequest request, @RequestBody UserDto userDto) {
         String userId = getUserIdFromCookie(request); // userId를 String으로 처리
         return myPageService.updateUser(userId, userDto);
+    }
+
+    @PutMapping("/user/profile-image")
+    public ResponseEntity<String> updateProfileImage(HttpServletRequest request, @RequestPart(value = "profileImage") MultipartFile profileImage) {
+        String userId = getUserIdFromCookie(request);
+        String imageUrl = myPageService.updateProfileImage(userId, profileImage);
+        return new ResponseEntity<>(imageUrl, HttpStatus.OK);
     }
 }

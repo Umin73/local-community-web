@@ -25,21 +25,8 @@ public class JoinRequest {
     private String kakaoUser;
 
 
-    public User toEntity() {
-        return User.builder()
-                .userId(this.userId)
-                .password(this.password)
-                .username(this.username)
-                .address(this.address)
-                .phone(this.phone)
-                .email(this.email)
-                .nickname(this.nickname)
-                .kakaoUser(this.kakaoUser)
-                .profile_url("https://image11.coupangcdn.com/image/cmg/oms/banner/e587245b-b580-48da-84b6-ac5f6aa392fb_980x670.jpg") // Default profile picture URL
-                .build();
-    }
 
-    public User toEntity(String encodedPassword) {
+    public User toEntity(String encodedPassword, String defaultProfileImageUrl) {
         return User.builder()
                 .userId(this.userId)
                 .password(encodedPassword)
@@ -49,7 +36,7 @@ public class JoinRequest {
                 .email(this.email)
                 .nickname(this.nickname)
                 .kakaoUser(this.kakaoUser)
-                .profile_url("https://image11.coupangcdn.com/image/cmg/oms/banner/e587245b-b580-48da-84b6-ac5f6aa392fb_980x670.jpg") // Default profile picture URL
+                .profile_url(defaultProfileImageUrl) // 설정 파일에서 가져온 기본 프로필 URL 사용
                 .build();
     }
 }

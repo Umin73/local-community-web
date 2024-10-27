@@ -29,20 +29,6 @@ public class PostController {
 
     @Autowired
     private UserRepository userRepository;
-//원본 코드
-//    @PostMapping("/post/create")
-//    public ResponseEntity<PostResponse> createPost(@RequestPart(value = "postRequest") PostRequest postRequest,
-//                                           @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles) {
-//        try {
-//            PostResponse createdPost = postService.createPost(postRequest, imageFiles);
-//            return new ResponseEntity<>(createdPost, HttpStatus.CREATED);
-//        } catch (IllegalArgumentException e) {
-//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//        } catch (IOException e) {
-//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
-
 
     // token값 반영, postMapping성공
     // 게시글 생성 메서드

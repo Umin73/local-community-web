@@ -4,6 +4,7 @@ import com.example.backend.signLogin.JoinRequest;
 import com.example.backend.signLogin.LoginRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -18,6 +19,10 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder encoder;
+
+    @Value("${default.profile.image.url}")
+    private String defaultProfileImageUrl;
+
 
     // 인증 메서드: 유저 ID와 비밀번호로 인증
     public boolean authenticate(String userId, String password) {
@@ -66,14 +71,12 @@ public class UserService {
         return userRepository.existsByUserId(userId);
     }
 
-    // 회원 가입 - 비밀번호 인코딩 없이
-    public void join(JoinRequest req) {
-        userRepository.save(req.toEntity());
-    }
+
 
     // 회원 가입 - 비밀번호 인코딩 후 저장
     public void join2(JoinRequest req) {
-        userRepository.save(req.toEntity(encoder.encode(req.getPassword())));
+        // 기본 프로필 이미지 URL 설정
+        userRepository.save(req.toEntity(encoder.encode(req.getPassword()), defaultProfileImageUrl));
     }
 
     // 로그인 메서드

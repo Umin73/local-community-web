@@ -75,13 +75,12 @@ public class PostService {
                 }
             }
         }
-        return PostResponse.toDto(savedPost, false, false,null, imageResponses, user);
+        return PostResponse.toDto(savedPost, false, false,null, imageResponses, user.getId());
     }
 
     @Transactional(readOnly = true)
     public PostResponse getPostById(Long postId, Long loginId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("Invalid post ID"));
-        User user = userRepository.findById(loginId).orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
         boolean isLiked = postLikeService.isLiked(loginId, postId);
         boolean isScrapped = postScrapService.isScrapped(loginId, postId);
 
@@ -119,7 +118,7 @@ public class PostService {
             redisDao.setValues(redisKey, String.valueOf(views));
         }
         post.setView(views);
-        return PostResponse.toDto(post, isScrapped, isLiked, commentResponses, imageResponses, user);
+        return PostResponse.toDto(post, isScrapped, isLiked, commentResponses, imageResponses, loginId);
     }
 
     @Transactional(readOnly = true)

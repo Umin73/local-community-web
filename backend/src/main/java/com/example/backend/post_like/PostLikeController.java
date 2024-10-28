@@ -12,8 +12,11 @@ import java.util.Optional;
 
 @RestController
 public class PostLikeController {
-    @Autowired
-    private PostLikeService postLikeService;
+    private final PostLikeService postLikeService;
+
+    public PostLikeController(PostLikeService postLikeService) {
+        this.postLikeService = postLikeService;
+    }
 
     @PostMapping(value = "/post/{postId}/like", produces = "application/json; charset=utf-8")
     public ResponseEntity<String> likePost(HttpServletRequest request, @PathVariable("postId") Long postId) {

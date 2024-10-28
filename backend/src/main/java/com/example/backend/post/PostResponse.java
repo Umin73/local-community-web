@@ -63,7 +63,7 @@ public class PostResponse {
         this.profile_url = profile_url;
     }
 
-    public static PostResponse toDto(Post post, boolean isScrapped, boolean isLiked, List<CommentResponse> comments, List<PostImageResponse> images, User user) {
+    public static PostResponse toDto(Post post, boolean isScrapped, boolean isLiked, List<CommentResponse> comments, List<PostImageResponse> images, Long loginId) {
         return new PostResponse(
                 post.getId(),
                 post.getUser().getId(),
@@ -82,8 +82,8 @@ public class PostResponse {
                 comments,
                 images,
                 post.getView(),
-                user.getId(),
-                user.getProfile_url()
+                loginId,
+                post.getUser().getProfile_url()
         );
     }
 }

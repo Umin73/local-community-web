@@ -2,6 +2,7 @@ package com.example.backend.post;
 
 import com.example.backend.comment.CommentResponse;
 import com.example.backend.post_image.PostImageResponse;
+import com.example.backend.user.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -39,7 +40,8 @@ public class PostResponse {
     private List<PostImageResponse> images = new ArrayList<>();
     private int view;
     private Long loginId;
-    public PostResponse(Long postId, Long userId, Long categoryId, String nickname, String title, String content, int likeCount, int commentCount, int scrapCount, boolean isEdited, boolean isScrapped, boolean isLiked, LocalDateTime createdDate, LocalDateTime modifiedDate, List<CommentResponse> comments, List<PostImageResponse> images, int view, Long loginId) {
+    private String profile_url;
+    public PostResponse(Long postId, Long userId, Long categoryId, String nickname, String title, String content, int likeCount, int commentCount, int scrapCount, boolean isEdited, boolean isScrapped, boolean isLiked, LocalDateTime createdDate, LocalDateTime modifiedDate, List<CommentResponse> comments, List<PostImageResponse> images, int view, Long loginId, String profile_url) {
         this.postId = postId;
         this.userId = userId;
         this.categoryId = categoryId;
@@ -58,9 +60,10 @@ public class PostResponse {
         this.images = images;
         this.view = view;
         this.loginId = loginId;
+        this.profile_url = profile_url;
     }
 
-    public static PostResponse toDto(Post post, boolean isScrapped, boolean isLiked, List<CommentResponse> comments, List<PostImageResponse> images, Long loginId) {
+    public static PostResponse toDto(Post post, boolean isScrapped, boolean isLiked, List<CommentResponse> comments, List<PostImageResponse> images, User user) {
         return new PostResponse(
                 post.getId(),
                 post.getUser().getId(),
@@ -79,7 +82,8 @@ public class PostResponse {
                 comments,
                 images,
                 post.getView(),
-                loginId
+                user.getId(),
+                user.getProfile_url()
         );
     }
 }

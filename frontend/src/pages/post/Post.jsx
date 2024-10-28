@@ -147,9 +147,7 @@ export default function Post() {
       <div className="post__parent">
       <div className="post__container">
           <div className="post__userInfo">
-            <img
-              src="https://i.ibb.co/j6t0z2T/Kakao-Talk-20230512-090604281.jpg"
-            />
+            <img src={post.profile_url} />
             <div className="post__info">
               <div className="post__nickname">{post.nickname}</div>
               <div className="post__date">

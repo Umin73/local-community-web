@@ -11,16 +11,15 @@ import java.util.Set;
 
 @Component
 public class ViewCountScheduler {
-
-    @Autowired
     private final RedisDao redisDao;
-    @Autowired
     private final PostRepository postRepository;
 
+    @Autowired
     public ViewCountScheduler(RedisDao redisDao, PostRepository postRepository) {
         this.redisDao = redisDao;
         this.postRepository = postRepository;
     }
+
     @Transactional
     @Scheduled(cron = "0 0 0 * * ?", zone = "Asia/Seoul")
     public void updateViewCounts() {

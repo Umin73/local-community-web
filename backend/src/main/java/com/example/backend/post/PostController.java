@@ -24,11 +24,11 @@ import java.util.Optional;
 
 @RestController
 public class PostController {
-    @Autowired
-    private PostService postService;
+    private final PostService postService;
 
-    @Autowired
-    private UserRepository userRepository;
+    public PostController(PostService postService) {
+        this.postService = postService;
+    }
 
     // token값 반영, postMapping성공
     // 게시글 생성 메서드
@@ -60,7 +60,6 @@ public class PostController {
         }
     }
 
-
     @GetMapping("/post/{postId}")
     public ResponseEntity<PostResponse> getPostById(HttpServletRequest request, @PathVariable("postId") Long postId) {
         Long id = getUserIdFromCookie(request);
@@ -71,6 +70,7 @@ public class PostController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
     @GetMapping("/posts")
     public ResponseEntity<Page<PostListResponse>> getPostList(@RequestParam(value = "categoryId", required = false) Long categoryId, @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC)
     Pageable pageable, @RequestParam(value = "keyword", required = false) String keyword) {
@@ -87,6 +87,7 @@ public class PostController {
         }
         return ResponseEntity.ok(postList);
     }
+
     @GetMapping("/posts/best")
     public ResponseEntity<List<PostListResponse>> getPostList(@RequestParam(value = "name") String name) {
         List<PostListResponse> postList = null;
@@ -99,6 +100,7 @@ public class PostController {
         }
         return ResponseEntity.ok(postList);
     }
+
     @PutMapping("/post/{postId}")
     public Long editPostById(@PathVariable("postId") Long postId, @RequestPart(value = "postEditRequest") String postEditRequestString, @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles) throws Exception {
         // 이건 postman에서 작동하도록 추가한 코드입니다.
@@ -106,6 +108,7 @@ public class PostController {
         PostEditRequest postEditRequest = objectMapper.readValue(postEditRequestString, PostEditRequest.class);
         return postService.update(postId, postEditRequest, imageFiles);
     }
+
     @DeleteMapping(value="/post/{postId}", produces="application/json; charset=utf-8")
     public ResponseEntity<String> deletePostById(@PathVariable("postId") Long postId) throws Exception {
         postService.delete(postId);

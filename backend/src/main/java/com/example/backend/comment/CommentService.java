@@ -14,15 +14,18 @@ import java.util.stream.Collectors;
 
 @Service
 public class CommentService {
+    private final UserRepository userRepository;
+    private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
+    private final EntityManager entityManager;
 
     @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private PostRepository postRepository;
-    @Autowired
-    private CommentRepository commentRepository;
-    @Autowired
-    private EntityManager entityManager;
+    public CommentService(UserRepository userRepository, PostRepository postRepository, CommentRepository commentRepository, EntityManager entityManager) {
+        this.userRepository = userRepository;
+        this.postRepository = postRepository;
+        this.commentRepository = commentRepository;
+        this.entityManager = entityManager;
+    }
 
     @Transactional
     public CommentResponse createComment(CommentRequest commentRequest) {

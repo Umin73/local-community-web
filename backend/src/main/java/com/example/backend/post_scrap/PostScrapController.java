@@ -12,8 +12,11 @@ import java.util.Optional;
 
 @RestController
 public class PostScrapController {
-    @Autowired
-    private PostScrapService postScrapService;
+    private final PostScrapService postScrapService;
+
+    public PostScrapController(PostScrapService postScrapService) {
+        this.postScrapService = postScrapService;
+    }
 
     @GetMapping("post/{postId}/scraps")
     public int getScrapCountByPostId(@PathVariable("postId") Long postId) {
@@ -33,6 +36,7 @@ public class PostScrapController {
         postScrapService.unscrapPost(id, postId);
         return ResponseEntity.ok("스크랩 취소 성공");
     }
+
     // JWT 토큰을 통해 userId를 쿠키에서 추출하는 메서드
     private Long getUserIdFromCookie(HttpServletRequest request) {
         Optional<Cookie> jwtCookie = getJwtTokenFromCookies(request.getCookies());

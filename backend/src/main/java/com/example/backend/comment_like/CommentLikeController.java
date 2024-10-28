@@ -12,8 +12,11 @@ import java.util.Optional;
 
 @RestController
 public class CommentLikeController {
-    @Autowired
-    private CommentLikeService commentLikeService;
+    private final CommentLikeService commentLikeService;
+
+    public CommentLikeController(CommentLikeService commentLikeService) {
+        this.commentLikeService = commentLikeService;
+    }
 
     @GetMapping("/comment/{commentId}/isLiked")
     public boolean getLikeCountByPostId(HttpServletRequest request, @PathVariable("commentId") Long commentId) {
@@ -21,10 +24,12 @@ public class CommentLikeController {
         Long id = getUserIdFromCookie(request);
         return commentLikeService.isLiked(id, commentId);
     }
+
     @GetMapping("/comment/{commentId}/likes")
     public int getLikeCountByPostId(@PathVariable("commentId") Long commentId) {
         return commentLikeService.getLikeCountByCommentId(commentId).size();
     }
+
     @PostMapping(value = "/comment/{commentId}/like", produces = "application/json; charset=utf-8")
     public ResponseEntity<String> likeComment(HttpServletRequest request, @PathVariable("commentId") Long commentId) {
         //jwtToken으로부터 id(PK)를 뽑아내기
@@ -32,6 +37,7 @@ public class CommentLikeController {
         commentLikeService.likeComment(id, commentId);
         return ResponseEntity.ok("댓글 좋아요 성공");
     }
+
     // JWT 토큰을 통해 userId를 쿠키에서 추출하는 메서드
     private Long getUserIdFromCookie(HttpServletRequest request) {
         Optional<Cookie> jwtCookie = getJwtTokenFromCookies(request.getCookies());

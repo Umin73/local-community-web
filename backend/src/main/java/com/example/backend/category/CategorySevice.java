@@ -12,8 +12,11 @@ import java.util.stream.Collectors;
 
 @Service
 public class CategorySevice {
-    @Autowired
-    public CategoryRepository categoryRepository;
+    public final CategoryRepository categoryRepository;
+
+    public CategorySevice(CategoryRepository categoryRepository) {
+        this.categoryRepository = categoryRepository;
+    }
 
     public String getCategoryNameById(Long categoryId) {
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new NoSuchElementException("Invalid category ID"));

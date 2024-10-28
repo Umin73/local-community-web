@@ -8,8 +8,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class CategoryController {
-    @Autowired
-    public CategorySevice categoryService;
+    public final CategorySevice categoryService;
+
+    public CategoryController(CategorySevice categoryService) {
+        this.categoryService = categoryService;
+    }
 
     @GetMapping(value = "/category/{categoryId}", produces = "application/json; charset=utf-8")
     public String getCategoryNameById(@PathVariable("categoryId") Long categoryId) {

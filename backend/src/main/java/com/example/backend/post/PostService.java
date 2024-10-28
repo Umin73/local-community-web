@@ -10,14 +10,12 @@ import com.example.backend.config.S3Service;
 import com.example.backend.post_image.PostImage;
 import com.example.backend.post_image.PostImageRepository;
 import com.example.backend.post_image.PostImageResponse;
-import com.example.backend.post_like.PostLikeRepository;
 import com.example.backend.post_like.PostLikeService;
 import com.example.backend.post_scrap.PostScrapService;
 import com.example.backend.user.User;
 import com.example.backend.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.Pageable;
@@ -33,26 +31,28 @@ import java.util.stream.Collectors;
 
 @Service
 public class PostService {
+    private final PostRepository postRepository;
+    private final UserRepository userRepository;
+    private final CategoryRepository categoryRepository;
+    private final CommentRepository commentRepository;
+    private final PostImageRepository postImageRepository;
+    private final S3Service s3Service;
+    private final PostLikeService postLikeService;
+    private final PostScrapService postScrapService;
+    private final RedisDao redisDao;
+
     @Autowired
-    private PostRepository postRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private CategoryRepository categoryRepository;
-    @Autowired
-    private PostLikeRepository postLikeRepository;
-    @Autowired
-    private CommentRepository commentRepository;
-    @Autowired
-    private PostImageRepository postImageRepository;
-    @Autowired
-    private S3Service s3Service;
-    @Autowired
-    private PostLikeService postLikeService;
-    @Autowired
-    private PostScrapService postScrapService;
-    @Autowired
-    private RedisDao redisDao;
+    public PostService(PostRepository postRepository, UserRepository userRepository, CategoryRepository categoryRepository, CommentRepository commentRepository, PostImageRepository postImageRepository, S3Service s3Service, PostLikeService postLikeService, PostScrapService postScrapService, RedisDao redisDao) {
+        this.postRepository = postRepository;
+        this.userRepository = userRepository;
+        this.categoryRepository = categoryRepository;
+        this.commentRepository = commentRepository;
+        this.postImageRepository = postImageRepository;
+        this.s3Service = s3Service;
+        this.postLikeService = postLikeService;
+        this.postScrapService = postScrapService;
+        this.redisDao = redisDao;
+    }
 
     @Transactional
     public PostResponse createPost(PostRequest postRequest, List<MultipartFile> imageFiles) throws IOException {
@@ -77,12 +77,13 @@ public class PostService {
         }
         return PostResponse.toDto(savedPost, false, false,null, imageResponses, user);
     }
+
     @Transactional(readOnly = true)
     public PostResponse getPostById(Long postId, Long loginId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("Invalid post ID"));
         User user = userRepository.findById(loginId).orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
-        Boolean isLiked = postLikeService.isLiked(loginId, postId);
-        Boolean isScrapped = postScrapService.isScrapped(loginId, postId);
+        boolean isLiked = postLikeService.isLiked(loginId, postId);
+        boolean isScrapped = postScrapService.isScrapped(loginId, postId);
 
         List<PostImage> postImages = postImageRepository.findByPostId(postId);
         List<PostImageResponse> imageResponses = postImages.stream()
@@ -127,31 +128,37 @@ public class PostService {
         Page<Post> posts = postRepository.findByCategoryId(categoryId, pageable);
         return posts.map(PostListResponse::toDto);
     }
+
     @Transactional(readOnly = true)
     public Page<PostListResponse> searchPostsByCategoryId(Long categoryId, String keyword, Pageable pageable) {
         Page<Post> posts = postRepository.findByCategoryIdAndKeyword(categoryId, keyword, pageable);
         return posts.map(PostListResponse::toDto);
     }
+
     @Transactional(readOnly = true)
     public Page<PostListResponse> searchPosts(String keyword, Pageable pageable) {
         Page<Post> posts = postRepository.findByTitleContainingOrContentContaining(keyword, keyword, pageable);
         return posts.map(PostListResponse::toDto);
     }
+
     @Transactional(readOnly = true)
     public List<PostListResponse> getPostsByView() {
         List<Post> posts = postRepository.findTop20ByViewGreaterThanOrderByViewDesc(1);
         return posts.stream().map(PostListResponse::toDto).collect(Collectors.toList());
     }
+
     @Transactional(readOnly = true)
     public List<PostListResponse> getPostsByLikeCount() {
         List<Post> posts = postRepository.findTop20ByLikeCountGreaterThanOrderByLikeCountDesc(0);
         return posts.stream().map(PostListResponse::toDto).collect(Collectors.toList());
     }
+
     @Transactional(readOnly = true)
     public List<PostListResponse> getPostsByCommentCount() {
         List<Post> posts = postRepository.findTop20ByCommentCountGreaterThanOrderByCommentCountDesc(0);
         return posts.stream().map(PostListResponse::toDto).collect(Collectors.toList());
     }
+
     @Transactional
     public Long update(Long postId, PostEditRequest postEditRequest, List<MultipartFile> imageFiles) throws Exception {
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("Invalid post ID"));
@@ -188,6 +195,7 @@ public class PostService {
         post.update(postEditRequest.getTitle(), postEditRequest.getContent(), postEditRequest.isEdited());
         return postId;
     }
+
     @Transactional
     public void delete(Long postId) throws Exception {
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("Invalid post ID"));
@@ -199,6 +207,7 @@ public class PostService {
         redisDao.deleteValues(postId.toString());
         postRepository.delete(post);
     }
+
     @Transactional
     public void deleteS3Image(List<String> imageUrls) throws Exception {
         for (String imageUrl : imageUrls) {

@@ -12,8 +12,11 @@ import java.util.Optional;
 
 @RestController
 public class CommentController {
-    @Autowired
-    private CommentService commentService;
+    private final CommentService commentService;
+
+    public CommentController(CommentService commentService) {
+        this.commentService = commentService;
+    }
 
     @PostMapping("/comment/create")
     public ResponseEntity<CommentResponse> createComment(HttpServletRequest request, @RequestBody CommentRequest commentRequest) {
@@ -26,10 +29,12 @@ public class CommentController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+
     @PutMapping("/comment/{commentId}")
     public Long editComment(@PathVariable("commentId") Long commentId, @RequestBody CommentEditRequest editRequest) {
         return commentService.editComment(commentId, editRequest);
     }
+
     @DeleteMapping(value="/comment/{commentId}", produces="application/json; charset=utf-8")
     public ResponseEntity<String> deleteComment(@PathVariable("commentId") Long commentId) {
         commentService.deleteComment(commentId);

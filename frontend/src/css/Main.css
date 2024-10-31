@@ -111,9 +111,14 @@
 
 .article {width:250px; height:200px; background-color:white; display:inline-block; margin:20px;}
 
-.table1 {width:250px; height:200px; border:1px solid lightgray; border-collapse:collapse; background-color:white;}
+.table1 {table-layout: fixed; border:1px solid lightgray; border-collapse:collapse; background-color:white;}
 
 td {padding:10px;}
 
+.table1 td {width:10px; height:75px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+
+.pointer {cursor:pointer;}
+
+.table1 .tabletitle {height: 50px;}
 .font0 {font-size:25px; font-weight:bold;}
 

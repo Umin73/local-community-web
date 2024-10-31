@@ -128,15 +128,15 @@ public class JwtLoginController {
 
         return ResponseEntity.ok("로그인 성공");
     }
-    @GetMapping("/logout")
-    public String logout(HttpServletResponse response) {
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(HttpServletResponse response) {
         // 쿠키 파기
         Cookie cookie = new Cookie("jwtToken", null);
         cookie.setMaxAge(0);
         cookie.setPath("/");
         response.addCookie(cookie);
 
-        return "로그아웃 성공";
+        return ResponseEntity.ok("로그아웃 성공");
     }
 
     @GetMapping("/info")

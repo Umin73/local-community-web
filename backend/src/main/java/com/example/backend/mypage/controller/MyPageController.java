@@ -58,10 +58,18 @@ public class MyPageController {
         return myPageService.getUserById(userId);
     }
 
+//    @GetMapping("/posts")
+//    public List<PostDto> getPostsByUserId(HttpServletRequest request) {
+//        String userId = getUserIdFromCookie(request); // userId를 String으로 처리
+//        return myPageService.getPostsByUserId(userId);
+//    }
+
     @GetMapping("/posts")
-    public List<PostDto> getPostsByUserId(HttpServletRequest request) {
-        String userId = getUserIdFromCookie(request); // userId를 String으로 처리
-        return myPageService.getPostsByUserId(userId);
+    public List<PostDto> getPostsByUserId(HttpServletRequest request,
+                                      @RequestParam(defaultValue = "0") int page,
+                                      @RequestParam(defaultValue = "3") int size) {
+    String userId = getUserIdFromCookie(request); // userId를 String으로 처리
+    return myPageService.getPostsByUserId(userId, page, size);
     }
 
     @GetMapping("/comments")

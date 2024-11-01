@@ -20,6 +20,7 @@ import com.example.backend.user.User;
 import com.example.backend.user.UserDto;
 import com.example.backend.user.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -125,10 +126,28 @@ public class MyPageService {
 
 
     //본인이 작성한 글 불러오기
-    public List<PostDto> getPostsByUserId(String userId) {
+//    public List<PostDto> getPostsByUserId(String userId) {
+//        User user = userRepository.findByUserId(userId)
+//                .orElseThrow(() -> new IllegalArgumentException("User not found with userId: " + userId));
+//        return postRepository.findByUser(user)
+//                .stream()
+//                .map(post -> new PostDto(
+//                        post.getId(),
+//                        post.getTitle(),
+//                        post.getContent(),
+//                        post.getCreatedDate(),
+//                        post.getModifiedDate(),
+//                        post.getUser().getUsername(),
+//                        post.getComments().size()
+//                ))
+//                .collect(Collectors.toList());
+//    }
+    // 본인이 작성한 글 불러오기 (페이징 추가)
+    public List<PostDto> getPostsByUserId(String userId, int page, int size) {
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with userId: " + userId));
-        return postRepository.findByUser(user)
+
+        return postRepository.findByUser(user, PageRequest.of(page, size))
                 .stream()
                 .map(post -> new PostDto(
                         post.getId(),

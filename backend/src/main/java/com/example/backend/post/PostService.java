@@ -100,8 +100,8 @@ public class PostService {
             commentResponses.add(CommentResponse.toDto(comment, replyResponses, loginId));
         }
 
-        String redisKey = post.getId().toString();
-        String redisUserKey = loginId.toString();
+        String redisKey = "post:" + post.getId().toString();
+        String redisUserKey = "user:" + loginId.toString();
         String values = redisDao.getValues(redisKey);
         int views = 0;
         if (values != null) {
@@ -110,9 +110,8 @@ public class PostService {
             values = "0";
         }
 
-        // 유저를 key로 조회한 게시글 ID List안에 해당 게시글 ID가 포함되어 있지 않는다면,
         if(!redisDao.getValuesList(redisUserKey).contains(redisKey)) {
-            redisDao.setValuesList(redisUserKey, redisKey); // 유저 key로 해당 글 ID를 List 형태로 저장
+            redisDao.setValuesList(redisUserKey, redisKey);
             redisDao.setKeyExpiry(redisUserKey, Duration.ofHours(24));
             views = Integer.parseInt(values) + 1;
             redisDao.setValues(redisKey, String.valueOf(views));

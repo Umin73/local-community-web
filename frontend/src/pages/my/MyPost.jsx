@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
+import Pagination from "react-js-pagination";
 import Header from "../../components/my/Header";
 import Sidebar from "../../components/my/Sidebar";
 import '../../css/MyPage.css';
@@ -8,6 +9,14 @@ import '../../css/MyPage.css';
 export default function MyPost() {
     const [currentPost, setCurrentPost] = useState([]);
     const [error, setError] = useState("");
+    const rpp = 5; //한페이지에 5개씩
+    const [page, setPage] = useState(1); //현재페이지
+    const handlePageChange = (page) => {
+        setPage(page);
+    };
+    const startIndex = (page - 1) * rpp;
+    const lastIndex = rpp * page;
+    const [size, setSize] = useState(0);
 
     useEffect(() => {
         const fetchPosts = async () => {
@@ -16,21 +25,21 @@ export default function MyPost() {
                 const postsResponse = await axios.get('/mypage/posts', {
                     withCredentials: true // 쿠키를 포함하여 서버로 요청을 보냄
                 });
+                setCurrentPost(postsResponse.data.slice(startIndex, lastIndex));// 받아온 게시물 데이터를 상태에 저장
+                console.log(postsResponse.data.length);
+                setSize(postsResponse.data.length);
 
-                setCurrentPost(postsResponse.data); // 받아온 게시물 데이터를 상태에 저장
             } catch (error) {
                 console.error("Failed to fetch posts:", error);
                 setError("게시물을 가져오는 데 실패했습니다.");
             }
-        };
-
+        }
         fetchPosts();
-    }, []);
+    }, [startIndex, lastIndex, page]);
 
     return (
         <>
-            <div className="root-wrap">
-                <Header/>
+            <div className="root-wrap"><Header/>
             </div>
             <div className="side-wrap">
                 <Sidebar/>
@@ -56,7 +65,17 @@ export default function MyPost() {
                         ))
                     ) : (
                         <p>작성한 글이 없습니다.</p>
+
                     )}
+                    <PgBox>
+                        <Pagination
+                            activePage={page}
+                            itemsCountPerPage={rpp}
+                            totalItemsCount={size}
+                            pageRangeDisplayed={5}
+                            onChange={handlePageChange}
+                        />
+                    </PgBox>
                 </div>
             </Mypost>
         </>
@@ -109,6 +128,35 @@ const Bottom = styled.div`
 const ErrorMsg = styled.div`
     color: red;
     margin-top: 10px;
+`;
+
+const PgBox = styled.div`
+    .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 10px;
+    }
+    
+    .pagination a {
+        border : 0;
+    }
+    ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    ul.pagination li {
+        display: inline-block;
+        width: 20px;
+    }
+
+    ul.pagination li a {
+        text-decoration: none; 
+        color: #484848;
+    }
+    ul.pagination li.active a {
+        color: green;
+    }
 `;
 
 

@@ -224,6 +224,7 @@ export default function Post() {
                   key={`comment-${comment.id}`}
                   item={comment}
                   postId={postId}
+                  postWriter={post.userId}
                 />
               </div>
             ))}

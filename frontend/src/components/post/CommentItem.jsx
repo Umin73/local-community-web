@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import  "../../css/Comment.css";
 import axios from "axios";
 
-export default function CommentItem({ item, postId }) {
+export default function CommentItem({ item, postId, postWriter }) {
   const [replyContent, setReplyContent] = useState("");
   const [replyInputs, setReplyInputs] = useState([]);
   const [editStates, setEditStates] = useState({});
@@ -123,7 +123,7 @@ export default function CommentItem({ item, postId }) {
         <img src="https://cf-fpi.everytime.kr/0.png" />
         <div className="comment__nickname">
           {item.nickname}
-          {item.userId === item.loginId && <span>(글쓴이)</span>} {/* userId와 loginId가 같으면 "(글쓴이)" 표시 */}
+          {postWriter === item.userId && <span>(글쓴이)</span>} {/* userId와 loginId가 같으면 "(글쓴이)" 표시 */}
         </div>
         <div className="comment__date">
           {item.isEdited ? item.modifiedDate : item.createdDate}
@@ -199,7 +199,7 @@ export default function CommentItem({ item, postId }) {
         <img src="https://cf-fpi.everytime.kr/0.png" alt="User" />
         <div className="comment__nickname">
           {child.nickname}
-          {child.userId === item.loginId && <span>(글쓴이)</span>}
+          {postWriter === child.userId && <span>(글쓴이)</span>}
         </div>
         <div className="comment__date">{child.createdDate}</div>
         <ul className="comment__option">

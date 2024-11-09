@@ -37,11 +37,9 @@ public class AuthController {
                     String token = cookie.getValue();
                     isAuth = JwtTokenUtil.validateToken(token);
 
-
                     if(isAuth) {
                         String userId = JwtTokenUtil.getuserId(token);
                         User user = userService.findByUserId(userId);
-                        System.out.println("user.getUserId(): "+user.getUserId());
                         if(user != null && user.getKakaoUser() != null) {
                             isKakaoUser = true;
                         }
@@ -51,9 +49,6 @@ public class AuthController {
                 }
             }
         }
-
-        System.out.println("isAuth: " + isAuth);
-        System.out.println("isKakaoUser: " + isKakaoUser);
 
         Map<String, Boolean> response = new HashMap<>();
         response.put("isAuth", isAuth);

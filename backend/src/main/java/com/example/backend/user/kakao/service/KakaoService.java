@@ -78,4 +78,17 @@ public class KakaoService {
 
         return userInfo;
     }
+
+    public void logoutKakaoUser(String accessToken) {
+        WebClient.create(KAUTH_USER_URL_HOST)
+                .post()
+                .uri(uriBuilder -> uriBuilder
+                        .scheme("https")
+                        .path("/v1/user/logout")
+                        .build(true))
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                .retrieve()
+                .bodyToMono(Void.class)
+                .block();
+    }
 }

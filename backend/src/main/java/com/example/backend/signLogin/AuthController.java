@@ -1,5 +1,7 @@
 package com.example.backend.signLogin;
 
+import com.example.backend.user.User;
+import com.example.backend.user.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
@@ -16,24 +18,46 @@ import java.util.Map;
 @RequestMapping("/jwt-login")
 public class AuthController {
 
+    private final UserService userService;
+
+    public AuthController(UserService userService) {
+        this.userService = userService;
+    }
+
     @GetMapping("/check-auth")
     public ResponseEntity<Map<String, Boolean>> checkAuth(HttpServletRequest request) {
 
         Cookie[] cookies = request.getCookies();
         boolean isAuth = false;
+        boolean isKakaoUser = false;
 
         if(cookies != null) {
             for (Cookie cookie : cookies) {
                 if("jwtToken".equals(cookie.getName())) {
                     String token = cookie.getValue();
                     isAuth = JwtTokenUtil.validateToken(token);
+
+
+                    if(isAuth) {
+                        String userId = JwtTokenUtil.getuserId(token);
+                        User user = userService.findByUserId(userId);
+                        System.out.println("user.getUserId(): "+user.getUserId());
+                        if(user != null && user.getKakaoUser() != null) {
+                            isKakaoUser = true;
+                        }
+                    }
+
                     break;
                 }
             }
         }
 
+        System.out.println("isAuth: " + isAuth);
+        System.out.println("isKakaoUser: " + isKakaoUser);
+
         Map<String, Boolean> response = new HashMap<>();
         response.put("isAuth", isAuth);
+        response.put("isKakaoUser", isKakaoUser);
         return ResponseEntity.ok(response);
     }
 }

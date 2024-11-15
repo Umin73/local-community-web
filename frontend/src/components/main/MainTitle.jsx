@@ -46,45 +46,6 @@ function MainTitle(props) {
     }, []);
 
     const handleLogout = () => {
-        /*if(isKakaoUser) {
-            fetch("/kakaologin/logout", {
-                method: "POST",
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            })
-                .then(response => {
-                    if (response.ok) {
-                        alert("카카오 로그아웃 성공");
-                        window.location.href = "/";
-                    } else {
-                        alert("카카오 로그아웃 실패");
-                    }
-                }).catch(error => {
-                console.error("Error: ", error);
-                alert("에러 발생");
-            });
-        } else {
-            fetch("/jwt-login/logout", {
-                method: "POST",
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            })
-                .then(response => {
-                    if(response.ok) {
-                        alert("로그아웃 성공");
-                        window.location.href = "/";
-                    } else {
-                        alert("로그아웃 실패");
-                    }
-                }).catch(error => {
-                console.error("Error: ", error);
-                alert("에러 발생");
-            });
-        }*/
         fetch("/jwt-login/logout", {
             method: "POST",
             credentials: "include",

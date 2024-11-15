@@ -7,17 +7,20 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.http.HttpStatusCode;
 import reactor.core.publisher.Mono;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Slf4j
 @RequiredArgsConstructor
 @Service
 public class KakaoService {
 
+    @Value("${kakao.admin.key}")
+    private String adminKey;
     private String clientId;
     private final String KAUTH_TOKEN_URL_HOST;
     private final String KAUTH_USER_URL_HOST;
@@ -90,5 +93,29 @@ public class KakaoService {
                 .retrieve()
                 .bodyToMono(Void.class)
                 .block();
+    }
+
+    public boolean unlinkKakaoUser(String kakaoUserId) {
+        String url = "https://kapi.kakao.com/v1/user/unlink";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "KakaoAK " + adminKey);
+
+        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(url)
+                .queryParam("target_id_type", "user_id")
+                .queryParam("target_id", kakaoUserId);
+
+        HttpEntity<String> requestEntity = new HttpEntity<>(headers);
+        RestTemplate restTemplate = new RestTemplate();
+
+        try {
+            // 카카오와 연결을 끊기 위한 요청
+            ResponseEntity<String> response = restTemplate.exchange(
+                    uriBuilder.toUriString(), HttpMethod.POST, requestEntity, String.class);
+            return response.getStatusCode().is2xxSuccessful();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

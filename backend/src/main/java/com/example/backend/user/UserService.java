@@ -1,7 +1,14 @@
 package com.example.backend.user;
 
+import com.example.backend.comment.CommentRepository;
+import com.example.backend.comment_like.CommentLikeRepository;
+import com.example.backend.post.PostRepository;
+import com.example.backend.post_like.PostLikeRepository;
+import com.example.backend.post_scrap.PostScrapRepository;
+import com.example.backend.region.RegionRepository;
 import com.example.backend.signLogin.JoinRequest;
 import com.example.backend.signLogin.LoginRequest;
+import com.example.backend.user.kakao.service.KakaoService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,8 +24,15 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
 
+    private final KakaoService kakaoService;
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder encoder;
+    private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
+    private final CommentLikeRepository commentLikeRepository;
+    private final PostLikeRepository postLikeRepository;
+    private final PostScrapRepository postScrapRepository;
+    private final RegionRepository regionRepository;
 
     @Value("${default.profile.image.url}")
     private String defaultProfileImageUrl;
@@ -41,6 +55,10 @@ public class UserService {
     // 유저 ID로 사용자 찾기
     public User findById(Long id) {
         return userRepository.findById(id).orElse(null);
+    }
+
+    public User findByUserId(String userId) {
+        return userRepository.findByuserId(userId).orElse(null);
     }
 
     public String findUserIdByEmail(String email) {
@@ -125,5 +143,53 @@ public class UserService {
         user.setPassword(encodedPassword);
 
         userRepository.save(user);
+    }
+
+    @Transactional
+    public boolean deleteUser(Long id) {
+        Optional<User> userOptional = userRepository.findById(id);
+        if(userOptional.isPresent()) {
+            User user = userOptional.get();
+            updateToDeletedUser(id);
+            userRepository.delete(user);
+            return true;
+        }
+        return false;
+    }
+
+    @Transactional
+    public boolean deleteKakaoUser(Long id, String kakaoUserId) {
+        boolean isUnlinked = kakaoService.unlinkKakaoUser(kakaoUserId);
+
+        if(isUnlinked) {
+            updateToDeletedUser(id);
+            userRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+
+    public void updateToDeletedUser(Long userId) {
+        commentRepository.updateCommentsToDeletedUser(userId, getDeletedUserPlaceholder());
+        commentLikeRepository.updateCommentLikeToDeletedUser(userId, getDeletedUserPlaceholder());
+        postRepository.updatePostsToDeletedUser(userId, getDeletedUserPlaceholder());
+        postLikeRepository.updatePostLikeToDeletedUser(userId, getDeletedUserPlaceholder());
+        postScrapRepository.updatePostScrapToDeletedUser(userId, getDeletedUserPlaceholder());
+        regionRepository.updateRegionToDeletedUser(userId, getDeletedUserPlaceholder());
+    }
+
+    @Transactional
+    public User getDeletedUserPlaceholder() {
+        return userRepository.findByUserId("deleted_user")
+                .orElseGet(()-> {
+                    User deletedUser = User.builder()
+                            .userId("deleted_user")
+                            .username("탈퇴한 사용자")
+                            .password("")
+                            .email("")
+                            .nickname("탈퇴한 사용자")
+                            .build();
+                    return userRepository.save(deletedUser);
+                });
     }
 }

@@ -19,6 +19,7 @@ import com.example.backend.post_scrap.PostScrapRepository;
 import com.example.backend.user.User;
 import com.example.backend.user.UserDto;
 import com.example.backend.user.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -44,6 +45,7 @@ public class MyPageService {
     @Value("${default.profile.image.url}")
     private String defaultProfileImageUrl;
 
+    @Autowired
     public MyPageService(PostLikeRepository postLikeRepository, CommentLikeRepository commentLikeRepository, UserRepository userRepository, PostRepository postRepository, CommentRepository commentRepository, PostScrapRepository postScrapRepository, S3Service s3Service) {
         this.postLikeRepository = postLikeRepository;
         this.commentLikeRepository = commentLikeRepository;

@@ -72,7 +72,7 @@ export default function Login() {
                 password: pw,
             });
             if (response.status === 200) {
-                setSuccess("로그인 성공");
+                // setSuccess("로그인 성공");
                 setError("");
                 // 로그인 성공 후 JWT 토큰을 localStorage에 저장
                 localStorage.setItem('jwtToken', response.data.jwtToken);
@@ -80,7 +80,7 @@ export default function Login() {
                 console.log(response.data.jwtToken);
                 console.log(localStorage.getItem('jwtToken'));
                 // 로그인 성공 후 페이지 이동
-                // window.location.href = "/myinfo";
+                window.location.href = "/";
             }
         } catch (error) {
             setError("로그인 실패: 로그인 아이디 또는 비밀번호가 틀렸습니다.");

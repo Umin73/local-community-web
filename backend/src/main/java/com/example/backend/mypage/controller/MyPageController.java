@@ -73,15 +73,19 @@ public class MyPageController {
     }
 
     @GetMapping("/comments")
-    public List<CommentDto> getCommentsByUserId(HttpServletRequest request) {
+    public List<PostDto> getCommentedPostsByUserId(HttpServletRequest request,
+                                                   @RequestParam(defaultValue = "0") int page,
+                                                   @RequestParam(defaultValue = "3") int size) {
         String userId = getUserIdFromCookie(request); // userId를 String으로 처리
-        return myPageService.getCommentsByUserId(userId);
+        return myPageService.getCommentedPostsByUserId(userId, page, size);
     }
 
     @GetMapping("/scraps")
-    public List<PostScrapDto> getScrappedPostsByUserId(HttpServletRequest request) {
+    public List<PostScrapDto> getScrappedPostsByUserId(HttpServletRequest request,
+                                                       @RequestParam(defaultValue = "0") int page,
+                                                       @RequestParam(defaultValue = "3") int size) {
         String userId = getUserIdFromCookie(request); // userId를 String으로 처리
-        return myPageService.getScrappedPostsByUserId(userId);
+        return myPageService.getScrappedPostsByUserId(userId, page, size);
     }
 
     @PutMapping("/user")

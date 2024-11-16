@@ -43,6 +43,10 @@ public class UserService {
         return userRepository.findById(id).orElse(null);
     }
 
+    public User findByUserId(String userId) {
+        return userRepository.findByuserId(userId).orElse(null);
+    }
+
     public String findUserIdByEmail(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("해당 이메일로 등록된 유저가 없습니다."));

@@ -4,9 +4,20 @@ import '../../css/MyPage.css';
 import Header from "../../components/my/Header";
 import Sidebar from "../../components/my/Sidebar";
 import axios from 'axios';
+import Pagination from "react-js-pagination";
 
 export default function MyComment() {
     const [commentedPosts, setCommentedPosts] = useState([]);
+
+    const [error, setError] = useState("");
+    const rpp = 10; //한페이지에 10개씩
+    const [page, setPage] = useState(1); //현재페이지
+    const handlePageChange = (page) => {
+        setPage(page);
+    };
+    const startIndex = (page - 1) * rpp;
+    const lastIndex = rpp * page;
+    const [size, setSize] = useState(0);
 
     // Fetch posts the user has commented on when the component mounts
     useEffect(() => {
@@ -15,7 +26,8 @@ export default function MyComment() {
                 const response = await axios.get('/mypage/comments', {
                     withCredentials: true // Include cookies (JWT) in the request
                 });
-                setCommentedPosts(response.data); // Store the commented posts data
+                setCommentedPosts(response.data.slice(startIndex, lastIndex)); // Store the commented posts data
+                setSize(response.data.length);
             } catch (error) {
                 console.error('Failed to fetch commented posts:', error);
             }
@@ -34,6 +46,7 @@ export default function MyComment() {
             </div>
             <MyCommentWrapper>
                 <Title>댓글 단 글</Title>
+                {error && <ErrorMsg>{error}</ErrorMsg>}
                 <Table>
                     <tbody>
                     {commentedPosts.length > 0 ? (
@@ -41,7 +54,6 @@ export default function MyComment() {
                             <tr key={post.id}>
                                 <td>{post.title}</td>
                                 <td>{post.content}</td>
-                                <td>{post.commentCount}개의 댓글</td>
                                 <td>{new Date(post.createdDate).toLocaleString()}</td>
                             </tr>
                         ))
@@ -52,6 +64,15 @@ export default function MyComment() {
                     )}
                     </tbody>
                 </Table>
+                <PgBox>
+                <Pagination
+                    activePage={page}
+                    itemsCountPerPage={rpp}
+                    totalItemsCount={size}
+                    pageRangeDisplayed={5}
+                    onChange={handlePageChange}
+                />
+            </PgBox>
             </MyCommentWrapper>
         </>
     );
@@ -89,6 +110,35 @@ const Table = styled.table`
 
     td {
         padding: 12px;
+    }
+`;
+
+const PgBox = styled.div`
+    .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 10px;
+    }
+    
+    .pagination a {
+        border : 0;
+    }
+    ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    ul.pagination li {
+        display: inline-block;
+        width: 20px;
+    }
+
+    ul.pagination li a {
+        text-decoration: none; 
+        color: #484848;
+    }
+    ul.pagination li.active a {
+        color: green;
     }
 `;
 

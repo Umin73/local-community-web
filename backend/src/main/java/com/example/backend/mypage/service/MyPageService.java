@@ -175,16 +175,16 @@ public class MyPageService {
                 ))
                 .collect(Collectors.toList());
     }
-
-    //본인이 작성한 댓글이 달린 글 불러오기
-    public List<PostDto> getCommentedPostsByUserId(String userId) {
+    // 본인이 댓글을 단 게시글 가져오기
+    public List<PostDto> getCommentedPostsByUserId(String userId, int page, int size) {
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with userId: " + userId));
-        List<Comment> comments = commentRepository.findByUser(user);
+
+        List<Comment> comments = commentRepository.findByUser(user, PageRequest.of(page, size)).getContent();
 
         return comments.stream()
-                .map(comment -> comment.getPost())
-                .distinct()
+                .map(Comment::getPost) // 댓글의 게시글 추출
+                .distinct() // 중복 게시글 제거
                 .map(post -> new PostDto(
                         post.getId(),
                         post.getTitle(),
@@ -197,11 +197,14 @@ public class MyPageService {
                 .collect(Collectors.toList());
     }
 
+
+
     //본인이 스크랩한 글 불러오기
-    public List<PostScrapDto> getScrappedPostsByUserId(String userId) {
+    public List<PostScrapDto> getScrappedPostsByUserId(String userId, int page, int size) {
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with userId: " + userId));
-        return postScrapRepository.findByUser(user)
+
+        return postScrapRepository.findByUser(user, PageRequest.of(page, size)).getContent()
                 .stream()
                 .map(postScrap -> new PostScrapDto(
                         postScrap.getPost().getId(),

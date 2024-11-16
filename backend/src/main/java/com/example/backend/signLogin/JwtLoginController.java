@@ -2,6 +2,7 @@ package com.example.backend.signLogin;
 import com.example.backend.user.User;
 import com.example.backend.user.UserService;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -157,5 +158,25 @@ public class JwtLoginController {
     @GetMapping("/authorization-fail")
     public String authorizationFail() {
         return "권한 실패";
+    }
+
+    @DeleteMapping("/withdraw")
+    public ResponseEntity<String> withdraw(@RequestParam(name = "userId") String userId) {
+        User user = userService.findByUserId(userId);
+        Long id = user.getId();
+
+        boolean isDeleted;
+
+        if(user.getKakaoUser().isEmpty()) {
+            isDeleted = userService.deleteUser(id);
+        } else {
+            isDeleted = userService.deleteKakaoUser(id,userId);
+        }
+
+        if(isDeleted) {
+            return ResponseEntity.ok("회원 탈퇴 성공");
+        } else {
+            return ResponseEntity.status(500).body("회원 탈퇴 실패");
+        }
     }
 }

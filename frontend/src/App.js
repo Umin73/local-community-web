@@ -27,7 +27,7 @@ function App(props) {
                 <Route path="/jwt-login/find-id" element={<FindId/>} />
                 <Route path="/jwt-login/login" element={<Login/>}/>
                 <Route path="/jwt-login/join" element={<SignUp/>}/>
-{/*                <Route path="/login" element={<Login />} />
+                {/*                <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<SignUp />} />*/}
                 <Route path="/myInfo" element={<MyInfo />} />
                 <Route path="/myPost" element={<MyPost />} />

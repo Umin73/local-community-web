@@ -196,44 +196,45 @@ export default function CommentItem({ item, postId, postWriter }) {
       {item.children && item.children.map((child) => (
     <div key={child.commentId} className="reply">
       <div className="commentInfo">
-        <img src="https://cf-fpi.everytime.kr/0.png" alt="User" />
+        <img src="https://cf-fpi.everytime.kr/0.png" alt="User"/>
         <div className="comment__nickname">
           {child.nickname}
           {postWriter === child.userId && <span>(글쓴이)</span>}
         </div>
         <div className="comment__date">{child.createdDate}</div>
+        <div className="comment__isEdited">{item.isEdited ? "(수정됨)" : ""}</div>
         <ul className="comment__option">
           {child.userId === item.loginId ? (
-            <>
-              <li>
-                <button onClick={() => toggleEdit(child.commentId, child.content)}>
-                  {editStates[child.commentId] ? "수정 취소" : "수정"}
-                </button>
-              </li>
-              <li>
-                <button onClick={() => deleteComment(child.commentId)}>
-                  삭제
-                </button>
-              </li>
-            </>
+              <>
+                <li>
+                  <button onClick={() => toggleEdit(child.commentId, child.content)}>
+                    {editStates[child.commentId] ? "수정 취소" : "수정"}
+                  </button>
+                </li>
+                <li>
+                  <button onClick={() => deleteComment(child.commentId)}>
+                    삭제
+                  </button>
+                </li>
+              </>
           ) : (
-            <>
-              <li>
-                <button onClick={() => toggleReplyInput(child.commentId)}>
-                  대댓글
-                </button>
-              </li>
-              <li>
-                <button onClick={(event) => likeComment(event, child.commentId)}>
-                  추천
-                </button>
-              </li>
-            </>
+              <>
+                <li>
+                  <button onClick={() => toggleReplyInput(child.commentId)}>
+                    대댓글
+                  </button>
+                </li>
+                <li>
+                  <button onClick={(event) => likeComment(event, child.commentId)}>
+                    추천
+                  </button>
+                </li>
+              </>
           )}
         </ul>
       </div>
       {editStates[child.commentId] ? (
-        <div className="editComment">
+          <div className="editComment">
           <input
             type="text"
             value={editedContents[child.commentId] || ""}

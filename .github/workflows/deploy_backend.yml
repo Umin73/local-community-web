@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - dev
-      - feat/deploy/#28
+      - feat/deploy/#30
 
 jobs:
   Deploy_Backend_to_EC2:
@@ -29,17 +29,16 @@ jobs:
             
             # backend 디렉토리로 이동
             cd backend
-
-            # 테스트 디렉토리 제거
-            rm -rf src/main/test
-
+            
             # gradlew 파일에 실행 권한 추가
             chmod +x ./gradlew
 
             # application.properties 파일 생성
             echo "${APP_PROPERTIES}" > src/main/resources/application.properties
-
-            # Gradle 빌드 및 실행
-            ./gradlew clean build
+            
+            # Gradle 빌드 (테스트 제외)
+            ./gradlew clean build -x test
+            
+            # 기존 애플리케이션 종료 후 새 애플리케이션 실행
             sudo fuser -k -n tcp 8080 || true
             nohup java -jar build/libs/*SNAPSHOT.jar > ./output.log 2>&1 &

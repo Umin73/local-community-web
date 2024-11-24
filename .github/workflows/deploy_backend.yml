@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - dev
-      - feat/deploy/#30
+      - feat/deploy/#28
 
 jobs:
   Deploy_Backend_to_EC2:
@@ -32,6 +32,9 @@ jobs:
 
             # 테스트 디렉토리 제거
             rm -rf src/main/test
+
+            # gradlew 파일에 실행 권한 추가
+            chmod +x ./gradlew
 
             # application.properties 파일 생성
             echo "${APP_PROPERTIES}" > src/main/resources/application.properties

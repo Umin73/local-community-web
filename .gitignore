@@ -1,25 +1,14 @@
 # 빌드 아티팩트 (Spring Boot)
-<<<<<<< HEAD
 target/
 build/
-=======
-/target/
-/build/
->>>>>>> 8f27b57f3ac68d1c9c1ac63bdbfef1ac1de7c021
 *.jar
 *.war
 *.class
 
 # Node.js/React 관련 (React)
-<<<<<<< HEAD
 node_modules/
 dist/
 build/
-=======
-/node_modules/
-/dist/
-/build/
->>>>>>> 8f27b57f3ac68d1c9c1ac63bdbfef1ac1de7c021
 
 # 환경 설정 파일
 .env
@@ -31,7 +20,6 @@ application.yml
 spring.log
 
 # IntelliJ IDEA 관련 파일
-<<<<<<< HEAD
 .idea/
 *.iml
 backend/out/
@@ -50,21 +38,3 @@ tmp/
 
 # Gradle 관련
 .gradle/
-=======
-/.idea/
-/*.iml
-/out/
-
-# OS 관련 파일
-.DS_Store
-Thumbs.db
-
-# 캐시 및 임시 파일
-/cache/
-/tmp/
-/*.tmp
-*.swp
-
-# Git 관련
-.git/
->>>>>>> 8f27b57f3ac68d1c9c1ac63bdbfef1ac1de7c021

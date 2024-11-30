@@ -24,7 +24,6 @@ export default function MyPost() {
                     params: { page: page - 1, size: rpp }, // Spring에서는 0부터 시작
                     withCredentials: true, // JWT 쿠키 포함
                 });
-
                 // 백엔드 응답에서 게시물 데이터와 총 게시물 수를 설정
                 setCurrentPost(response.data.posts); // 현재 페이지 게시물
                 setTotalItems(response.data.totalItems); // 전체 게시물 수
@@ -57,10 +56,10 @@ export default function MyPost() {
                                 <Content>{data.content}</Content>
                                 <Bottom>
                                     <Date>
-                                        {`${data.createdDate[0]}-${data.createdDate[1]}-${data.createdDate[2]}`}
+                                        {`${data.createdDate[0]}-${data.createdDate[1]}-${data.createdDate[2]} | ${data.userName ||'작성자 없음'}`}
                                     </Date>
                                     <LikeComment>
-                                        {"좋아요 " + (data.likeCount || 0)}
+                                        {"좋아요 " + (data.likesCount || 0)}
                                         &nbsp;&nbsp;&nbsp;&nbsp;
                                         {"댓글 " + (data.commentCount || 0)}
                                     </LikeComment>

@@ -48,25 +48,28 @@ export default function Bookmark() {
             <BookmarkWrapper>
                 <Title>북마크</Title>
                 {error && <ErrorMsg>{error}</ErrorMsg>}
-                <Table>
-                    <tbody>
+                <div>
                     {scrappedPosts.length > 0 ? (
                         scrappedPosts.map(post => (
-                            <tr key={post.id}>
-                                <td>{post.title}</td>
-                                <td>{post.content}</td>
-                                <td>{post.userName || '작성자 없음'}</td>
-                                <td>{`${post.createdDate[0]}-${post.createdDate[1]}-${post.createdDate[2]}`}</td>
-                            </tr>
+                            <Box key={post.id}>
+                                <Board>{post.title}</Board>
+                                <Content>{post.content}</Content>
+                                <Bottom>
+                                    <Date>
+                                        {`${post.createdDate[0]}-${post.createdDate[1]}-${post.createdDate[2]} | ${post.userName ||'작성자 없음'}`}
+                                    </Date>
+                                    <LikeComment>
+                                        {"좋아요 " + (post.likesCount || 0)}
+                                        &nbsp;&nbsp;&nbsp;&nbsp;
+                                        {"댓글 " + (post.commentCount || 0)}
+                                    </LikeComment>
+                                </Bottom>
+                            </Box>
                         ))
                     ) : (
-                        <tr>
-                            <td colSpan="4">북마크한 글이 없습니다.</td>
-                        </tr>
+                        <p>작성한 글이 없습니다.</p>
                     )}
-                    </tbody>
-                </Table>
-                <PgBox>
+                    <PgBox>
                     <Pagination
                         activePage={page} // 현재 페이지
                         itemsCountPerPage={rpp} // 한 페이지당 아이템 수
@@ -75,6 +78,7 @@ export default function Bookmark() {
                         onChange={handlePageChange} // 페이지 변경 핸들러
                     />
                 </PgBox>
+                </div>
             </BookmarkWrapper>
         </>
     );
@@ -91,7 +95,36 @@ const Title = styled.div`
     font-size: 20px;
     display: inline-block;
 `;
+const Box = styled.div`
+    border: 1px solid #989898;
+    padding: 10px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+`;
 
+const Board = styled.div`
+    font-weight: bold;
+    color: #043400;
+`;
+
+const Content = styled.div`
+    margin-top: 10px;
+    margin-bottom: 25px;
+`;
+
+const Date = styled.div`
+    display: inline-block;
+`;
+
+const LikeComment = styled.div`
+    float: right;
+    margin-right: 10px;
+`;
+
+const Bottom = styled.div`
+    font-size: 13px;
+    color: #989898;
+`;
 const ErrorMsg = styled.div`
     color: red;
     font-size: 14px;
@@ -128,6 +161,9 @@ const PgBox = styled.div`
         margin-top: 10px;
     }
 
+    .pagination a {
+        border: 0;
+    }
     ul {
         list-style: none;
         padding: 0;
@@ -139,10 +175,9 @@ const PgBox = styled.div`
     }
 
     ul.pagination li a {
-        text-decoration: none; 
+        text-decoration: none;
         color: #484848;
     }
-
     ul.pagination li.active a {
         color: green;
     }

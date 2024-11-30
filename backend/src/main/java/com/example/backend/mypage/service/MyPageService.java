@@ -157,6 +157,7 @@ public class MyPageService {
                         post.getCreatedDate(),
                         post.getModifiedDate(),
                         post.getUser().getUsername(),
+                        post.getLikeCount(),
                         post.getComments().size()
                 ))
                 .collect(Collectors.toList());
@@ -204,6 +205,7 @@ public class MyPageService {
                         post.getCreatedDate(),
                         post.getModifiedDate(),
                         post.getUser() != null ? post.getUser().getUsername() : "탈퇴한 사용자",
+                        post.getLikeCount(),
                         post.getComments().size()
                 ))
                 .collect(Collectors.toList());
@@ -247,7 +249,9 @@ public class MyPageService {
                         postScrap.getPost().getContent(),
                         postScrap.getPost().getCreatedDate(),
                         postScrap.getPost().getModifiedDate(),
-                        postScrap.getPost().getUser() != null ? postScrap.getPost().getUser().getUsername() : "탈퇴한 사용자"
+                        postScrap.getPost().getUser() != null ? postScrap.getPost().getUser().getUsername() : "탈퇴한 사용자",
+                        postScrap.getPost().getLikeCount(),
+                        postScrap.getPost().getCommentCount()
                 ))
                 .collect(Collectors.toList());
     }

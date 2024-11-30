@@ -16,9 +16,10 @@ public class PostScrapDto {
     private String userName;
     private int likeCount;
     private int commentCount;
+    private String categoryName;
 
 
-    public PostScrapDto(Long id, String title, String content, LocalDateTime createdDate, LocalDateTime modifiedDate, String userName, int likeCount,int commentCount) {
+    public PostScrapDto(Long id, String title, String content, LocalDateTime createdDate, LocalDateTime modifiedDate, String userName, int likeCount,int commentCount, String categoryName) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -27,5 +28,6 @@ public class PostScrapDto {
         this.userName = userName;
         this.likeCount = likeCount;
         this.commentCount = commentCount;
+        this.categoryName = categoryName;
     }
 }

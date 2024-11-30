@@ -9,11 +9,9 @@ import Pagination from "react-js-pagination";
 export default function MyComment() {
     const [commentedPosts, setCommentedPosts] = useState([]);
     const [error, setError] = useState("");
-    const rpp = 10;
+    const rpp = 5; // 한 페이지에 보여줄 댓글 수
     const [page, setPage] = useState(1);
-    const startIndex = (page - 1) * rpp;
-    const lastIndex = rpp * page;
-    const [size, setSize] = useState(0);
+    const [totalItems, setTotalItems] = useState(0); // 전체 댓글 수
 
     const handlePageChange = (newPage) => {
         setPage(newPage);
@@ -22,11 +20,15 @@ export default function MyComment() {
     useEffect(() => {
         const fetchCommentedPosts = async () => {
             try {
+                // 서버로 현재 페이지와 페이지 크기 전달
                 const response = await axios.get('/mypage/comments', {
-                    withCredentials: true
+                    params: { page: page - 1, size: rpp }, // Spring에서는 페이지가 0부터 시작
+                    withCredentials: true, // JWT 쿠키 포함
                 });
-                setCommentedPosts(response.data.slice(startIndex, lastIndex));
-                setSize(response.data.length);
+
+                // 백엔드 응답에서 게시물 데이터와 총 게시물 수를 설정
+                setCommentedPosts(response.data.posts); // 댓글 단 글 목록
+                setTotalItems(response.data.totalItems); // 전체 댓글 수
             } catch (error) {
                 setError('Failed to fetch commented posts.');
                 console.error('Fetch error:', error);
@@ -34,15 +36,15 @@ export default function MyComment() {
         };
 
         fetchCommentedPosts();
-    }, [startIndex, lastIndex]);
+    }, [page]); // 페이지 번호가 변경될 때마다 실행
 
     return (
         <>
             <div className="root-wrap">
-                <Header/>
+                <Header />
             </div>
             <div className="side-wrap">
-                <Sidebar/>
+                <Sidebar />
             </div>
             <MyCommentWrapper>
                 <Title>댓글 단 글</Title>
@@ -54,7 +56,7 @@ export default function MyComment() {
                             <tr key={post.id}>
                                 <td>{post.title}</td>
                                 <td>{post.content}</td>
-                                <td>{new Date(post.createdDate).toLocaleString()}</td>
+                                <td>{`${post.createdDate[0]}-${post.createdDate[1]}-${post.createdDate[2]}`}</td>
                             </tr>
                         ))
                     ) : (
@@ -66,11 +68,11 @@ export default function MyComment() {
                 </Table>
                 <PgBox>
                     <Pagination
-                        activePage={page}
-                        itemsCountPerPage={rpp}
-                        totalItemsCount={size}
-                        pageRangeDisplayed={5}
-                        onChange={handlePageChange}
+                        activePage={page} // 현재 페이지
+                        itemsCountPerPage={rpp} // 한 페이지당 아이템 수
+                        totalItemsCount={totalItems} // 전체 아이템 수
+                        pageRangeDisplayed={5} // 표시할 페이지 버튼 수
+                        onChange={handlePageChange} // 페이지 변경 핸들러
                     />
                 </PgBox>
             </MyCommentWrapper>

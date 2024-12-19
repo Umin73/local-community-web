@@ -31,10 +31,14 @@ jobs:
           script: |
             # 프로젝트 디렉토리로 이동
             cd /home/ubuntu/local-community-web
-            
-            # dev 브랜치 병합
+
+            # 원격 브랜치 가져오기
             git fetch origin
-            git checkout feat/deploy/#30
+
+            # feat/deploy/#30 브랜치로 이동 (원격 브랜치를 로컬에 생성)
+            git checkout -b feat/deploy/#30 origin/feat/deploy/#30 || git checkout feat/deploy/#30
+
+            # dev 브랜치 병합
             git merge origin/dev || {
               echo "Merge conflict occurred, please resolve conflicts before deploying.";
               exit 1;

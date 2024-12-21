@@ -30,92 +30,38 @@ jobs:
           script_stop: true
           script: |
             # 환경 변수 설정
-            env DATABASE_URL="${{ secrets.DATABASE_URL }}" \\
-                DATABASE_USERNAME="${{ secrets.DATABASE_USERNAME }}" \\
-                DATABASE_PASSWORD="${{ secrets.DATABASE_PASSWORD }}" \\
-                KAKAO_CLIENT_ID="${{ secrets.KAKAO_CLIENT_ID }}" \\
-                KAKAO_ADMIN_KEY="${{ secrets.KAKAO_ADMIN_KEY }}" \\
-                AWS_ACCESS_KEY="${{ secrets.AWS_ACCESS_KEY }}" \\
-                AWS_SECRET_KEY="${{ secrets.AWS_SECRET_KEY }}" \\
-                SPRING_MAIL_USERNAME="${{ secrets.SPRING_MAIL_USERNAME }}" \\
-                SPRING_MAIL_PASSWORD="${{ secrets.SPRING_MAIL_PASSWORD }}" \\
-            bash -c '
-                # 설정 확인을 위한 환경 변수 출력
-                echo "DATABASE_URL=$DATABASE_URL"
-                echo "DATABASE_USERNAME=$DATABASE_USERNAME"
-                echo "DATABASE_PASSWORD=$DATABASE_PASSWORD"
+            export DATABASE_URL="${{ secrets.DATABASE_URL }}"
+            export DATABASE_USERNAME="${{ secrets.DATABASE_USERNAME }}"
+            export DATABASE_PASSWORD="${{ secrets.DATABASE_PASSWORD }}"
+            export KAKAO_CLIENT_ID="${{ secrets.KAKAO_CLIENT_ID }}"
+            export KAKAO_ADMIN_KEY="${{ secrets.KAKAO_ADMIN_KEY }}"
+            export AWS_ACCESS_KEY="${{ secrets.AWS_ACCESS_KEY }}"
+            export AWS_SECRET_KEY="${{ secrets.AWS_SECRET_KEY }}"
+            export SPRING_MAIL_USERNAME="${{ secrets.SPRING_MAIL_USERNAME }}"
+            export SPRING_MAIL_PASSWORD="${{ secrets.SPRING_MAIL_PASSWORD }}"
 
-                # 프로젝트 디렉토리로 이동 후 feat/deploy/#30 브랜치 코드 가져오기
-                cd /home/ubuntu/local-community-web
-                git fetch origin
-                git checkout feat/deploy/#30 || git checkout -b feat/deploy/#30 origin/feat/deploy/#30
-                git pull origin feat/deploy/#30
+            # 설정 확인을 위한 환경 변수 출력
+            echo "DATABASE_URL=$DATABASE_URL"
+            echo "DATABASE_USERNAME=$DATABASE_USERNAME"
 
-                # backend 디렉토리로 이동
-                cd backend
+            # 프로젝트 디렉토리로 이동
+            cd /home/ubuntu/local-community-web
 
-                # 테스트 디렉토리 제거
-                rm -rf src/main/test
+            # 로컬 변경 사항 Stash
+            git stash || true
 
-                # 기존 application.properties 파일 제거 후 새로 생성
-                rm -rf src/main/resources/application.properties
-                echo "
-                spring.application.name=local-community-web
+            # feat/deploy/#30 브랜치로 전환
+            git fetch origin
+            git checkout feat/deploy/#30 || git checkout -b feat/deploy/#30 origin/feat/deploy/#30
+            git pull origin feat/deploy/#30
 
-                # AWS RDS 설정
-                spring.datasource.driver-class-name=org.mariadb.jdbc.Driver
-                spring.datasource.url=$DATABASE_URL
-                spring.datasource.username=$DATABASE_USERNAME
-                spring.datasource.password=$DATABASE_PASSWORD
+            # backend 디렉토리로 이동
+            cd backend
 
-                spring.jpa.hibernate.ddl-auto=update
+            # Gradle 빌드 (테스트 제외)
+            chmod +x ./gradlew
+            ./gradlew clean build -x test
 
-                # 카카오 API 설정
-                kakao.client_id=$KAKAO_CLIENT_ID
-                kakao.redirect_uri=http://localhost:8080/callback
-                kakao.admin.key=$KAKAO_ADMIN_KEY
-
-                # 쿠키 설정
-                server.servlet.session.tracking-modes=cookie
-                server.servlet.session.timeout=1800
-
-                # AWS S3 설정
-                cloud.aws.credentials.accessKey=$AWS_ACCESS_KEY
-                cloud.aws.credentials.secretKey=$AWS_SECRET_KEY
-                cloud.aws.s3.bucket=town-in
-                cloud.aws.region.static=ap-northeast-2
-                cloud.aws.stack.auto=false
-
-                # Redis 설정
-                spring.redis.host=localhost
-                spring.redis.port=6379
-
-                # 인코딩 설정
-                spring.http.encoding.charset=UTF-8
-                spring.http.encoding.enabled=true
-                spring.http.encoding.force=true
-
-                # 프론트엔드 URL
-                frontend.url=http://localhost:3000
-
-                # S3 기본 프로필 이미지 URL
-                default.profile.image.url=https://town-in.s3.ap-northeast-2.amazonaws.com/mypage/default-profile.png
-
-                # 이메일 설정
-                spring.mail.host=smtp.naver.com
-                spring.mail.port=465
-                spring.mail.username=$SPRING_MAIL_USERNAME
-                spring.mail.password=$SPRING_MAIL_PASSWORD
-                spring.mail.properties.mail.smtp.auth=true
-                spring.mail.properties.mail.smtp.starttls.enable=true
-                spring.mail.properties.mail.smtp.starttls.required=true
-                " > src/main/resources/application.properties
-
-                # Gradle 빌드 (테스트 제외)
-                chmod +x ./gradlew
-                ./gradlew clean build -x test
-
-                # 기존 애플리케이션 종료 및 새 애플리케이션 실행
-                sudo fuser -k -n tcp 8080 || true
-                nohup java -jar build/libs/*SNAPSHOT.jar > ./output.log 2>&1 &
-            '
+            # 기존 애플리케이션 종료 및 새 애플리케이션 실행
+            sudo fuser -k -n tcp 8080 || true
+            nohup java -jar build/libs/*SNAPSHOT.jar > ./output.log 2>&1 &

@@ -13,22 +13,23 @@ jobs:
     steps:
       - name: EC2 서버에 SSH 원격 접속 후 자동 배포 작업 수행
         uses: appleboy/ssh-action@v1.0.3
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
-          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
-          KAKAO_CLIENT_ID: ${{ secrets.KAKAO_CLIENT_ID }}
-          KAKAO_ADMIN_KEY: ${{ secrets.KAKAO_ADMIN_KEY }}
-          AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
-          AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
-          SPRING_MAIL_USERNAME: ${{ secrets.SPRING_MAIL_USERNAME }}
-          SPRING_MAIL_PASSWORD: ${{ secrets.SPRING_MAIL_PASSWORD }}
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script_stop: true
           script: |
+            # 환경 변수 설정 (GitHub Secrets 주입)
+            export DATABASE_URL=${DATABASE_URL}
+            export DATABASE_USERNAME=${DATABASE_USERNAME}
+            export DATABASE_PASSWORD=${DATABASE_PASSWORD}
+            export KAKAO_CLIENT_ID=${KAKAO_CLIENT_ID}
+            export KAKAO_ADMIN_KEY=${KAKAO_ADMIN_KEY}
+            export AWS_ACCESS_KEY=${AWS_ACCESS_KEY}
+            export AWS_SECRET_KEY=${AWS_SECRET_KEY}
+            export SPRING_MAIL_USERNAME=${SPRING_MAIL_USERNAME}
+            export SPRING_MAIL_PASSWORD=${SPRING_MAIL_PASSWORD}
+
             # 프로젝트 디렉토리로 이동
             cd /home/ubuntu/local-community-web
 
@@ -62,24 +63,24 @@ jobs:
 
             # AWS RDS 설정
             spring.datasource.driver-class-name=org.mariadb.jdbc.Driver
-            spring.datasource.url=$DATABASE_URL
-            spring.datasource.username=$DATABASE_USERNAME
-            spring.datasource.password=$DATABASE_PASSWORD
+            spring.datasource.url=${DATABASE_URL}
+            spring.datasource.username=${DATABASE_USERNAME}
+            spring.datasource.password=${DATABASE_PASSWORD}
 
             spring.jpa.hibernate.ddl-auto=update
 
             # 카카오 API 설정
-            kakao.client_id=$KAKAO_CLIENT_ID
+            kakao.client_id=${KAKAO_CLIENT_ID}
             kakao.redirect_uri=http://localhost:8080/callback
-            kakao.admin.key=$KAKAO_ADMIN_KEY
+            kakao.admin.key=${KAKAO_ADMIN_KEY}
 
             # 쿠키 설정
             server.servlet.session.tracking-modes=cookie
             server.servlet.session.timeout=1800
 
             # AWS S3 설정
-            cloud.aws.credentials.accessKey=$AWS_ACCESS_KEY
-            cloud.aws.credentials.secretKey=$AWS_SECRET_KEY
+            cloud.aws.credentials.accessKey=${AWS_ACCESS_KEY}
+            cloud.aws.credentials.secretKey=${AWS_SECRET_KEY}
             cloud.aws.s3.bucket=town-in
             cloud.aws.region.static=ap-northeast-2
             cloud.aws.stack.auto=false
@@ -102,8 +103,8 @@ jobs:
             # 이메일 설정
             spring.mail.host=smtp.naver.com
             spring.mail.port=465
-            spring.mail.username=$SPRING_MAIL_USERNAME
-            spring.mail.password=$SPRING_MAIL_PASSWORD
+            spring.mail.username=${SPRING_MAIL_USERNAME}
+            spring.mail.password=${SPRING_MAIL_PASSWORD}
             spring.mail.properties.mail.smtp.auth=true
             spring.mail.properties.mail.smtp.starttls.enable=true
             spring.mail.properties.mail.smtp.starttls.required=true
@@ -115,4 +116,4 @@ jobs:
 
             # 기존 애플리케이션 종료 및 새 애플리케이션 실행
             sudo fuser -k -n tcp 8080 || true
-            nohup java -jar build/libs/*SNAPSHOT.jar > ./output.log 2>&1 &
+            nohup java -jar build/libs/*SNAPSHOT.jar > ./backend-output.log 2>&1 &

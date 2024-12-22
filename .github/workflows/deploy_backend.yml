@@ -17,11 +17,11 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY }}
-          script_stop: true
+          script_stop: false  # 에러 발생 시 스크립트를 계속 실행
           script: |
             set -x  # 디버깅 활성화
 
-            # 환경 변수 설정
+            # GitHub Secrets를 사용하여 환경 변수 설정
             export DATABASE_URL="${{ secrets.DATABASE_URL }}"
             export DATABASE_USERNAME="${{ secrets.DATABASE_USERNAME }}"
             export DATABASE_PASSWORD="${{ secrets.DATABASE_PASSWORD }}"
@@ -81,6 +81,17 @@ jobs:
             # Redis 설정
             spring.redis.host=localhost
             spring.redis.port=6379
+
+            # HTTP 인코딩
+            spring.http.encoding.charset=UTF-8
+            spring.http.encoding.enabled=true
+            spring.http.encoding.force=true
+
+            # S3 기본 프로필 이미지 URL
+            default.profile.image.url=https://town-in.s3.ap-northeast-2.amazonaws.com/mypage/default-profile.png
+
+            # 프론트엔드 URL
+            frontend.url=https://d29fq77dbrqlbk.cloudfront.net
 
             # 이메일 설정
             spring.mail.host=smtp.naver.com

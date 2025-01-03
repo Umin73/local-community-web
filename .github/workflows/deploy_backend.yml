@@ -69,7 +69,7 @@ jobs:
 
             # 카카오 API 설정
             kakao.client_id=$KAKAO_CLIENT_ID
-            kakao.redirect_uri=http://localhost:8080/callback
+            kakao.redirect_uri=https://api.townin.site/callback
             kakao.admin.key=$KAKAO_ADMIN_KEY
 
             # AWS S3 설정
@@ -91,7 +91,7 @@ jobs:
             default.profile.image.url=https://town-in.s3.ap-northeast-2.amazonaws.com/mypage/default-profile.png
 
             # 프론트엔드 URL
-            frontend.url=https://d29fq77dbrqlbk.cloudfront.net
+            frontend.url=https://www.townin.site
 
             # 이메일 설정
             spring.mail.host=smtp.naver.com
@@ -101,6 +101,9 @@ jobs:
             spring.mail.properties.mail.smtp.auth=true
             spring.mail.properties.mail.smtp.starttls.enable=true
             spring.mail.properties.mail.smtp.starttls.required=true
+            
+            # 컨텍스트 경로 설정
+            server.servlet.context-path=/api
             EOF
 
             # Gradle 빌드 (테스트 제외)

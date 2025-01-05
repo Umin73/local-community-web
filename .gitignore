@@ -12,6 +12,10 @@ build/
 
 # 환경 설정 파일
 .env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 application.properties
 application.yml
 
@@ -49,3 +53,6 @@ clear
 !gradle/wrapper/gradle-wrapper.jar
 !gradlew
 !gradlew.bat
+
+# 테스트 관련 파일
+/coverage

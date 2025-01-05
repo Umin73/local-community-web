@@ -22,10 +22,18 @@ jobs:
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script_stop: true
           script: |
+            # 환경 변수 확인
+            if [[ -z "$CLOUDFRONT_DISTRIBUTION_ID" ]]; then
+              echo "Error: CLOUDFRONT_DISTRIBUTION_ID is not set. Please check your GitHub Secrets."
+              exit 1
+            fi
+
+            echo "Using CLOUDFRONT_DISTRIBUTION_ID: $CLOUDFRONT_DISTRIBUTION_ID"
+
             # 작업 디렉토리로 이동
             cd /home/ubuntu/local-community-web/frontend
 
-            # 브랜치 상태 확인 및 필요시만 fetch/reset 실행
+            # 브랜치 상태 확인 및 필요시 fetch/reset 실행
             if [ "$(git rev-parse --abbrev-ref HEAD)" != "feat/deploy/#80" ]; then
               git fetch origin feat/deploy/#80:feat/deploy/#80 || echo "Branch fetch failed"
               git checkout feat/deploy/#80 || git checkout -b feat/deploy/#80 origin/feat/deploy/#80
@@ -43,7 +51,7 @@ jobs:
             npx update-browserslist-db@latest || echo "Browserslist update failed"
 
             # babel-preset-react-app 관련 의존성 추가
-            npm install --save-dev @babel/plugin-proposal-private-property-in-object || echo "Babel plugin installation failed"
+            npm install --save-dev @babel/plugin-transform-private-property-in-object || echo "Babel plugin installation failed"
 
             # 프로젝트 빌드
             npm run build || echo "npm run build failed"
@@ -52,12 +60,26 @@ jobs:
             aws s3 sync build/ s3://town-in-web-page --region ap-northeast-2 --delete || echo "S3 sync failed"
 
             # CloudFront 캐시 무효화
-            if [[ -n "$CLOUDFRONT_DISTRIBUTION_ID" ]]; then
-              echo "Starting CloudFront invalidation..."
-              aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths "/*" || echo "CloudFront invalidation failed"
-            else
-              echo "CloudFront distribution ID is not set"
+            echo "Starting CloudFront invalidation..."
+            INVALIDATION_ID=$(aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths "/*" --query "Invalidation.Id" --output text)
+
+            if [[ -z "$INVALIDATION_ID" ]]; then
+              echo "Error: Failed to create CloudFront invalidation. Please check your AWS settings."
+              exit 1
             fi
 
+            echo "Invalidation ID: $INVALIDATION_ID"
+
+            # 캐시 무효화 상태 확인
+            while true; do
+              STATUS=$(aws cloudfront get-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --id $INVALIDATION_ID --query "Invalidation.Status" --output text)
+              echo "Current Invalidation Status: $STATUS"
+              if [ "$STATUS" == "Completed" ]; then
+                echo "Cache invalidation completed."
+                break
+              fi
+              sleep 10
+            done
+
             # 배포 완료 메시지 출력
-            echo "Frontend has been deployed from feat/deploy/#80 branch."
+            echo "Frontend has been successfully deployed from feat/deploy/#80 branch."

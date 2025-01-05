@@ -6,7 +6,7 @@ on:
       - feat/deploy/#80
 
 jobs:
-  Deploy_Frontend_to_EC2:
+  Deploy_Frontend_to_S3:
     runs-on: ubuntu-latest
 
     steps:
@@ -15,6 +15,7 @@ jobs:
         env:
           AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
           AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+          CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
@@ -31,9 +32,9 @@ jobs:
             # 최신 원격 브랜치와 강제 동기화
             git reset --hard origin/feat/deploy/#80 || echo "Reset failed"
 
-            # 환경 변수 설정 (REACT_APP_API_URL 명시적으로 설정)
-            export REACT_APP_API_URL="https://api.townin.site/api"
-            echo "Using REACT_APP_API_URL=${REACT_APP_API_URL}"
+            # REACT_APP_API_URL 환경 변수 .env.production 파일에 삽입
+            echo "REACT_APP_API_URL=https://api.townin.site/api" > .env.production
+            echo "Using .env.production with REACT_APP_API_URL=https://api.townin.site/api"
 
             # 의존성 설치
             npm install || echo "npm install failed"
@@ -43,6 +44,13 @@ jobs:
 
             # S3로 빌드 결과물 동기화
             aws s3 sync build/ s3://town-in-web-page --region ap-northeast-2 --delete || echo "S3 sync failed"
+
+            # CloudFront 캐시 무효화 작업
+            if [[ -n "$CLOUDFRONT_DISTRIBUTION_ID" ]]; then
+              aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths "/*" || echo "CloudFront invalidation failed"
+            else
+              echo "CloudFront distribution ID is not set"
+            fi
 
             # 배포 확인 메시지 출력
             echo "Frontend has been deployed from feat/deploy/#80 branch."

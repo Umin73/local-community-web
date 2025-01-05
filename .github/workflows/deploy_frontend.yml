@@ -15,19 +15,14 @@ jobs:
         env:
           AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
           AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
-          CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script_stop: true
           script: |
-            # 환경 변수 확인
-            if [[ -z "$CLOUDFRONT_DISTRIBUTION_ID" ]]; then
-              echo "Error: CLOUDFRONT_DISTRIBUTION_ID is not set. Please check your GitHub Secrets."
-              exit 1
-            fi
-
+            # CloudFront Distribution ID 설정
+            CLOUDFRONT_DISTRIBUTION_ID="E29K7L3RIQ0H87"
             echo "Using CLOUDFRONT_DISTRIBUTION_ID: $CLOUDFRONT_DISTRIBUTION_ID"
 
             # 작업 디렉토리로 이동

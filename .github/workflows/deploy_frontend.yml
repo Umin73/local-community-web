@@ -42,6 +42,9 @@ jobs:
             # 최신 caniuse-lite 업데이트
             npx update-browserslist-db@latest || echo "Browserslist update failed"
 
+            # babel-preset-react-app 관련 의존성 추가
+            npm install --save-dev @babel/plugin-proposal-private-property-in-object || echo "Babel plugin installation failed"
+
             # 프로젝트 빌드
             npm run build || echo "npm run build failed"
 
@@ -50,6 +53,7 @@ jobs:
 
             # CloudFront 캐시 무효화
             if [[ -n "$CLOUDFRONT_DISTRIBUTION_ID" ]]; then
+              echo "Starting CloudFront invalidation..."
               aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths "/*" || echo "CloudFront invalidation failed"
             else
               echo "CloudFront distribution ID is not set"

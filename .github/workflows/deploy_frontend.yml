@@ -31,10 +31,14 @@ jobs:
             # 최신 원격 브랜치와 강제 동기화
             git reset --hard origin/feat/deploy/#80 || echo "Reset failed"
 
+            # 환경 변수 설정 (REACT_APP_API_URL 명시적으로 설정)
+            export REACT_APP_API_URL="https://api.townin.site/api"
+            echo "Using REACT_APP_API_URL=${REACT_APP_API_URL}"
+
             # 의존성 설치
             npm install || echo "npm install failed"
 
-            # 프로젝트 빌드
+            # 프로젝트 빌드 (환경 변수 반영)
             npm run build || echo "npm run build failed"
 
             # S3로 빌드 결과물 동기화

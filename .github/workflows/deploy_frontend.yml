@@ -3,8 +3,7 @@ name: Frontend Auto Deploy to S3
 on:
   push:
     branches:
-      - dev
-      - feat/deploy/#32
+      - feat/deploy/#80
 
 jobs:
   Deploy_Frontend_to_EC2:
@@ -25,9 +24,9 @@ jobs:
             # 작업 디렉토리로 이동
             cd /home/ubuntu/local-community-web/frontend
 
-            # feat/deploy/#32 브랜치로 전환 및 강제 동기화
+            # feat/deploy/#80 브랜치로 전환 및 강제 동기화
             git fetch origin
-            git reset --hard origin/feat/deploy/#32
+            git reset --hard origin/feat/deploy/#80
 
             # 의존성 설치
             npm install
@@ -39,4 +38,4 @@ jobs:
             aws s3 sync build/ s3://town-in-web-page --region ap-northeast-2 --delete
 
             # 배포 확인 메시지 출력
-            echo "Frontend has been deployed from feat/deploy/#32 branch."
+            echo "Frontend has been deployed from feat/deploy/#80 branch."

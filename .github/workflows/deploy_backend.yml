@@ -3,8 +3,7 @@ name: Backend Auto Deploy to EC2
 on:
   push:
     branches:
-      - dev
-      - feat/deploy/#30
+      - feat/deploy/#80
 
 jobs:
   Deploy_Backend_to_EC2:
@@ -40,14 +39,14 @@ jobs:
             git merge --abort || true  # 이전 충돌 상태 초기화
             git reset --merge || true
             git fetch origin
-            git checkout feat/deploy/#30 || git checkout -b feat/deploy/#30 origin/feat/deploy/#30
-            git pull origin feat/deploy/#30 || true
+            git checkout feat/deploy/#80 || git checkout -b feat/deploy/#80 origin/feat/deploy/80
+            git pull origin feat/deploy/#80 || true
 
             # 충돌 파일 강제 덮어쓰기
             git checkout --theirs .github/workflows/deploy_backend.yml || echo "No conflicts to resolve"
             git add .github/workflows/deploy_backend.yml
             git commit -m "Auto-resolve conflict for deploy_backend.yml" || echo "No changes to commit"
-            git pull origin feat/deploy/#30 --rebase || true
+            git pull origin feat/deploy/#80 --rebase || true
 
             # backend 디렉토리로 이동
             cd backend

@@ -76,8 +76,8 @@ export default function Post() {
 
     if (window.confirm(confirmMessage)) {
       const endpoint = post.isScrapped
-          ? `/post/${postId}/unscrap`
-          : `/post/${postId}/scrap`;
+          ? `http://localhost:8080/post/${postId}/unscrap`
+          : `http://localhost:8080/post/${postId}/scrap`;
 
       try {
         await axiosInstance.post(endpoint, {}, {

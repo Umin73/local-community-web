@@ -138,6 +138,15 @@ public class MyPageController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/scraps/{id}")
+    public ResponseEntity<PostDto> getScrappedPostById(@PathVariable Long id) {
+        PostDto post = myPageService.getPostById(id); // 재사용 가능
+        if (post == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        return ResponseEntity.ok(post);
+    }
+
     @PutMapping("/user")
     public ResponseEntity<?> updateUser(HttpServletRequest request, @RequestBody UserDto userDto) {
         String userId = getUserIdFromCookie(request); // userId를 String으로 처리

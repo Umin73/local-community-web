@@ -117,6 +117,15 @@ public class MyPageController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/comments/{id}")
+    public ResponseEntity<PostDto> getCommentedPostById(@PathVariable Long id) {
+        PostDto post = myPageService.getPostById(id);
+        if (post == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        return ResponseEntity.ok(post);
+    }
+
     @GetMapping("/scraps")
     public ResponseEntity<Map<String, Object>> getScrappedPostsByUserId(
             HttpServletRequest request,
@@ -140,7 +149,7 @@ public class MyPageController {
 
     @GetMapping("/scraps/{id}")
     public ResponseEntity<PostDto> getScrappedPostById(@PathVariable Long id) {
-        PostDto post = myPageService.getPostById(id); // 재사용 가능
+        PostDto post = myPageService.getPostById(id);
         if (post == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }

@@ -88,6 +88,15 @@ public class MyPageController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/posts/{id}")
+    public ResponseEntity<PostDto> getPostById(@PathVariable Long id) {
+        PostDto post = myPageService.getPostById(id);
+        if (post == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        return ResponseEntity.ok(post);
+    }
+
     @GetMapping("/comments")
     public ResponseEntity<Map<String, Object>> getCommentedPostsByUserId(
             HttpServletRequest request,

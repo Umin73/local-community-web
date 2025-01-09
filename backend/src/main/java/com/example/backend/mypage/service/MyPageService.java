@@ -128,7 +128,21 @@ public class MyPageService {
         return userDto;
     }
 
-
+    public PostDto getPostById(Long id) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Post not found with ID: " + id));
+        return new PostDto(
+                post.getId(),
+                post.getTitle(),
+                post.getContent(),
+                post.getCreatedDate(),
+                post.getModifiedDate(),
+                post.getUser().getUsername(),
+                post.getLikeCount(),
+                post.getComments().size(),
+                post.getCategory().getName()
+        );
+    }
 
 
     // 본인이 작성한 글 불러오기 (페이징 추가)
